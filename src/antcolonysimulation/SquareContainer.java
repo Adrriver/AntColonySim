@@ -1,25 +1,43 @@
-package com.adrianmrivera;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package antcolonysimulation;
 
-import java.util.*;
 /**
  *
- * @author AdrianMRivera
+ * @author Adrian_and_Alanna
  */
-public static class SquareContainer {
+public class SquareContainer {
     
-    private static LinkedList<Square> squareList;
-    private static ColonyView colonyView;
+    private LinkedList grid;
+    private final ColonyView colonyView;
     
-    public SquareContainer(ColonyView colView){
-        setColonyView(colView);
+    public SquareContainer(ColonyView cView){
+        this.colonyView = cView;
+        grid = new LinkedList();
+        
+        for(int i = 0; i < 729; i++){
+            grid.add(new Square());
+        }
+        
+        int j = 0, x = 0, y = 0;
+        while(j < 729){
+            Square s = (Square) grid.get(j++);
+            s.setColonyNodeView( (ColonyNodeView)colonyView.getComponentAt(x, y) );
+           
+                if(y % 26 == 0){
+                    x++; 
+                    y = 0;
+                } else {
+                    y++;
+                }
+        }
     }
     
-    public static void setColView(ColonyView colView){
-        this.colonyView = colView;
+    public Square getGridSquare(int i){
+        return (Square) grid.get(i);
     }
-    
-    /** adds generated Square object to field "squareList" */
-    public static void add(Square squareInst){
-        squareList.add(squareInst);
-    }
-}
+}    
+
