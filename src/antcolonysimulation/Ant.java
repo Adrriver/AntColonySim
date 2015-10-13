@@ -37,6 +37,6 @@ abstract public class Ant {
     //tracks days of ants life (10/lifetime)
     public abstract void ageAnt();
     //sets ant's ID
-    public abstract void setID();
+    public abstract int getID();
     
 }
