@@ -14,7 +14,7 @@ public class SquareContainer {
     private LinkedList grid;
     private final ColonyView colonyView;
     
-    public SquareContainer(ColonyView cView){
+    public SquareContainer(ColonyView cView, ArrayList cnvArr){
         this.colonyView = cView;
         grid = new LinkedList();
         
@@ -24,8 +24,8 @@ public class SquareContainer {
         
         int j = 0, x = 0, y = 0;
         while(j < 729){
-            Square s = (Square) grid.get(j++);
-            s.setColonyNodeView( (ColonyNodeView)colonyView.getComponentAt(x, y) );
+            Square s = (Square) grid.get(j);
+            s.setColonyNodeView( (ColonyNodeView) cnvArr.get(j++) );
            
                 if(y % 26 == 0){
                     x++; 
@@ -39,5 +39,7 @@ public class SquareContainer {
     public Square getGridSquare(int i){
         return (Square) grid.get(i);
     }
+    
+    
 }    
 
