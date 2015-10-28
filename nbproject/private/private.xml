@@ -2,6 +2,23 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+<<<<<<< HEAD
         <group/>
+=======
+        <group>
+            <file>file:/Users/Adrian_and_Alanna/Documents/JavaWorkspace/AntColonySimulation/src/antcolonysimulation/ColonyNodeView.java</file>
+            <file>file:/Users/Adrian_and_Alanna/Documents/JavaWorkspace/AntColonySimulation/src/antcolonysimulation/AntColony.java</file>
+            <file>file:/Users/Adrian_and_Alanna/Documents/JavaWorkspace/AntColonySimulation/src/antcolonysimulation/Bala.java</file>
+            <file>file:/Users/Adrian_and_Alanna/Documents/JavaWorkspace/AntColonySimulation/src/antcolonysimulation/Soldier.java</file>
+            <file>file:/Users/Adrian_and_Alanna/Documents/JavaWorkspace/AntColonySimulation/src/antcolonysimulation/Ant.java</file>
+            <file>file:/Users/Adrian_and_Alanna/Documents/JavaWorkspace/AntColonySimulation/src/antcolonysimulation/AntSimGUI.java</file>
+            <file>file:/Users/Adrian_and_Alanna/Documents/JavaWorkspace/AntColonySimulation/src/antcolonysimulation/Forager.java</file>
+            <file>file:/Users/Adrian_and_Alanna/Documents/JavaWorkspace/AntColonySimulation/src/antcolonysimulation/Queen.java</file>
+            <file>file:/Users/Adrian_and_Alanna/Documents/JavaWorkspace/AntColonySimulation/src/antcolonysimulation/SquareContainer.java</file>
+            <file>file:/Users/Adrian_and_Alanna/Documents/JavaWorkspace/AntColonySimulation/src/antcolonysimulation/Driver.java</file>
+            <file>file:/Users/Adrian_and_Alanna/Documents/JavaWorkspace/AntColonySimulation/src/antcolonysimulation/Square.java</file>
+            <file>file:/Users/Adrian_and_Alanna/Documents/JavaWorkspace/AntColonySimulation/src/antcolonysimulation/Scout.java</file>
+        </group>
+>>>>>>> 5b543913e355a0009682b474ce17204b837825ce
     </open-files>
 </project-private>
