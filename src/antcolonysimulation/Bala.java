@@ -9,11 +9,28 @@ package antcolonysimulation;
  *
  * @author Adrian Rivera
  */
-public class Bala extends Ant{
+    
 
+public class Bala extends Ant{
+    
+    private int ID;
+    //equal to decimal 10, decremented daily
+    private int lifeSpan;
+    private int position;
+    private boolean expired;
+    
+    
+    public Bala(int ID){
+        setID(ID);
+    }
+    
     @Override
-    public boolean expire() {
+    public boolean hasExpired() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public void setExpired(boolean status){
+        this.expired = status;
     }
 
     @Override
@@ -47,8 +64,10 @@ public class Bala extends Ant{
     }
 
     @Override
-    public void setID() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setID(int ID) {
+        
     }
-    
+    public int getID() {
+        return ID;
+    }
 }

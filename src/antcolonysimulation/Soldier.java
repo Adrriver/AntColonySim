@@ -5,17 +5,33 @@
  */
 package antcolonysimulation;
 
+import java.util.HashMap;
+
 /**
  *
  * @author Adrian Rivera
  */
 public class Soldier extends Ant{
 
+    //id
+    private int ID;
+    //equal to decimal 10, decremented daily
+    private int lifeSpan;
+    private int position;
+    private boolean expired;
+    
+    public Soldier(int ID){
+        setID(ID);
+    }
     @Override
-    public boolean expire() {
+    public boolean hasExpired() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public void setExpired(boolean status){
+        this.expired = status;
+    }
+    
     @Override
     public void move() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -47,8 +63,11 @@ public class Soldier extends Ant{
     }
 
     @Override
-    public void setID() {
+    public void setID(int ID) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+    @Override 
+    public int getID(){
+        return ID;
+    }
 }

@@ -11,6 +11,8 @@ package antcolonysimulation;
  */
 public class Queen extends Ant {
     
+    private int lifespan;
+    
     //a new member of the colony is hatched and immediately enters simulation
     public void hatchMember(){
         
@@ -57,7 +59,12 @@ public class Queen extends Ant {
     }
 
     @Override
-    public void setID() {
+    public void setID(int ID) {
+     
+    }
+
+    @Override
+    public int getID() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

@@ -5,20 +5,44 @@
  */
 package antcolonysimulation;
 
+import java.util.HashMap;
+
 /**
  *
  * @author Adrian Rivera
  */
 public class Forager extends Ant{
     
+    //id
+    private int ID;
+    //equal to decimal 10, decremented daily
+    private int lifeSpan;
+    //log of ant moves
+    private HashMap moveLog;
     //stores units of food ant possesses (wrapped integer 1)
     private int food;
+    private boolean mode;//forage mode == true; return to nest mode == false;
+    private int position;
+    private boolean expired;
     
+    public Forager(int ID){
+        setID(ID);
+    }
+    
+    public boolean getMode(){
+        return mode;
+    }
+    public void setMode(boolean mode){
+        this.mode = mode;
+    }
     @Override
-    public boolean expire() {
+    public boolean hasExpired() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    public void setExpired(boolean status){
+        this.expired = status;
+    }
+    
     @Override
     public void move() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -56,12 +80,18 @@ public class Forager extends Ant{
 
     @Override
     public void ageAnt() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(this.lifeSpan - 1 != 0)
+            this.lifeSpan--;
+        else
+            setExpired(true);
     }
 
     @Override
-    public void setID() {
+    public void setID(int ID) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+    @Override
+    public int getID(){
+        return ID;
+    }
 }

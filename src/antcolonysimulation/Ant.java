@@ -19,11 +19,13 @@ abstract public class Ant {
     private int lifeSpan;
     //log of ant moves
     private HashMap moveLog;
+    //status of ant's life
+    private boolean expired;
     //stores units of food ant possesses (wrapped integer 1)
     private int food;
     
     //called by ageAnt, calls remove when var lifespan equals 0
-    public abstract boolean expire();
+    public abstract boolean hasExpired();
     //makes determined move to adjacent square
     public abstract void move();
     //removes deceased ants from the colony and colony board
@@ -37,6 +39,8 @@ abstract public class Ant {
     //tracks days of ants life (10/lifetime)
     public abstract void ageAnt();
     //sets ant's ID
+    public abstract void setID(int ID);
+    //gets ant's ID
     public abstract int getID();
     
 }

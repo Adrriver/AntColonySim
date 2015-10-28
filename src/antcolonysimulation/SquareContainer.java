@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+    All ant instances require access to the single instance of SquareContainer
+    to communicate with the GUI (colonyView)
  */
 package antcolonysimulation;
 
@@ -11,12 +10,17 @@ package antcolonysimulation;
  */
 public class SquareContainer {
     
-    private LinkedList grid;
+    private ArrayList grid;
     private final ColonyView colonyView;
-    
+    /**
+     *  Constructor:
+     *  @param cView receives ColonyView reference 
+     *  @param cnvArr is a reference to the colonyNodeView collection 
+     *         which contains the Square objects that comprise the visual grid
+     */
     public SquareContainer(ColonyView cView, ArrayList cnvArr){
         this.colonyView = cView;
-        grid = new LinkedList();
+        grid = new ArrayList();
         
         for(int i = 0; i < 729; i++){
             grid.add(new Square());
