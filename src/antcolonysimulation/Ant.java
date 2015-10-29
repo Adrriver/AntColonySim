@@ -34,8 +34,10 @@ abstract public class Ant {
     public abstract boolean isSquareOpen();
     //defines and performs primary action(s) for ant type
     public abstract void act();
+    //sets grid square of calling ant object
+    public abstract void setPosition(int pos);
     //returns grid square of calling ant object
-    public abstract int position(); 
+    public abstract int getPosition(); 
     //tracks days of ants life (10/lifetime)
     public abstract void ageAnt();
     //sets ant's ID

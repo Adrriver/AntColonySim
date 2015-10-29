@@ -1,4 +1,4 @@
-s/*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -110,7 +110,7 @@ public class AntColony implements SimulationEventListener {
         
         public static class Environment implements ActionListener {
             
-        private static SquareContainer gridContainer;
+        protected static SquareContainer gridContainer;
         private static LinkedList colonyMemberList;
         int ID = 1;
         javax.swing.Timer timer;
@@ -137,7 +137,7 @@ public class AntColony implements SimulationEventListener {
                 //Random number aids in decision of whether to initialize grid square with food (25%)
                 double chance = .25;
                 //random food unit amount between 500 and 1000 units
-                Random foodAmount = new Random() ;
+                Random foodAmount = new Random();
                 for(int i = 0; i < 729; i++){
                     double outcome = Math.random();
                         if(outcome < chance && i != 364){//outcome falls within 25% probability, simulating frequency of outcomes                                                       
@@ -148,18 +148,20 @@ public class AntColony implements SimulationEventListener {
             }
                 //Loops continuously through time cycle construct
             public boolean startSimulation(){
-                timer = new Timer(1000, this);
-                timer.start();
+                
                 
                 
                 
                 
                 return false;
             }
-                //Peforms one iteration of time cycle, that is, individual 1-turn 
+            //Peforms one iteration of time cycle, that is, individual 1-turn 
             public void stepThroughSim(){
                 
-                
+                for(int i = 0; i < colonyMemberList.size(); i++){
+                    Ant currentAnt = (Ant)colonyMemberList.get(i);
+                    
+                }
                 
                 
             }
@@ -172,6 +174,8 @@ public class AntColony implements SimulationEventListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            timer = new Timer(1000, this);
+                timer.start();
             if(Queen.hasExpired() == true)
                 timer.stop();
             else

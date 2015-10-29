@@ -1,4 +1,4 @@
-package antcolonysimulation;
+package com.adrianmrivera;
 /**
  *
  * @author AdrianMRivera
@@ -10,31 +10,24 @@ public class Square {
     private int unitsOfFood;
     private int unitsOfPheromone;
     private int open;
-    private ColonyNodeView colNodeView;
+    private ColonyNodeView nodeView;
     private int bala;
     private int scouts;
     private int foragers;
     private int soldiers;
     
     
-    public Square(){                      
-        setRevealed(-1);
-        setNumBala(0);
-        setNumScout(0);
-        setNumSoldier(0);
-        setNumForager(0);
+    public Square(ColonyNodeView cView){        
+        setRevealed(-2);
+        this.nodeView = cView;
+    }
+    
+    public int getFood(){
         
-    }        
-    
-    public void setColonyNodeView(ColonyNodeView cnv){
-        colNodeView = cnv;
+        return this.unitsOfFood;
     }
     
-    public ColonyNodeView getColNodeView(){
-        return colNodeView;
-    }
     public void setPheromone(int units){
-        
         this.unitsOfPheromone = units;
     }
     public int getPheromone(){
@@ -61,11 +54,6 @@ public class Square {
         this.unitsOfFood = units;
     }       
     
-   public int getFood(){
-        
-        return this.unitsOfFood;
-    }
-    
     public void setNumBala(int num){
         this.bala = num;
     }
@@ -90,32 +78,13 @@ public class Square {
         return this.scouts;       
     }
     
-    public void incrementScoutCnt(){
-        this.scouts++;
-    }
-    
-    public void decrementScoutCnt(){
-        this.scouts--;
-    }
-    
     public int getNumForager(){
         return this.foragers;       
-    }
-    
-    public void incrementForagerCnt(){
-        this.foragers++;
-    }
-    
-    public void decrementForagerCnt(){
-        this.foragers--;        
     }
     
     public int getNumSoldier(){
         return this.soldiers;
     }
     
-    public void startCombatActivity(){
-        //To Do: Code 1-on-1-fight mechanism
-    }
     
 } // end class Square definition
