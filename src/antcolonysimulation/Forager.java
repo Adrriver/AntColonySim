@@ -49,21 +49,24 @@ public class Forager extends Ant{
     @Override
     public void move() {
         if(mode == true){//if forager is in foraging mode
-            int nextMove = sensePheromone();
             
+            //called upon first move, which is out of the Queen's square
+            int nextMove = sensePheromone();                     
+            //push move onto ArrayStack moveLog
             moveLog.push(nextMove);//push nextMove onto the moves log to set trail pheromone
             //Updates Square object that forager ant is leaving during this move
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementForagerCnt();                        
             //Updates Square object in grid to reflect new position of this forager
-            AntColony.Environment.gridContainer.getGridSquare(
-                    nextMove).incrementForagerCnt();
+            AntColony.Environment.gridContainer.getGridSquare(nextMove).incrementForagerCnt();
             //Update colonyNodeViews to reflect current position of this forager ant
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setForagerCount(
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumForager() - 1);
-            //if this ant was the only ant in the Square object being left, then hide its icon
+            //if this ant was the only ant in the Square object being left, then hide corresponding icon
             if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumForager() == 0)
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideForagerIcon();
             
+            
+            //set node view's forager count
             AntColony.Environment.gridContainer.getGridSquare(nextMove).getColNodeView().setForagerCount(
             AntColony.Environment.gridContainer.getGridSquare(nextMove).getNumForager() + 1);
             
@@ -72,7 +75,8 @@ public class Forager extends Ant{
             
             setPosition(nextMove);
         } else {
-            //To do: program return-to-next-mode move method
+            //To do: program return-to-nest-mode move method
+            AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setPheromoneLevel(position);
         }
             
         
@@ -122,7 +126,7 @@ public class Forager extends Ant{
 
     @Override
     public void setID(int ID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       this.ID = ID;
     }
     @Override
     public int getID(){

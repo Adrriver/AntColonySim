@@ -53,7 +53,7 @@ public class Soldier extends Ant{
     }
 
     @Override
-    public int position() {
+    public int getPosition() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -64,10 +64,15 @@ public class Soldier extends Ant{
 
     @Override
     public void setID(int ID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.ID = ID;
     }
     @Override 
     public int getID(){
         return ID;
+    }
+
+    @Override
+    public void setPosition(int pos) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

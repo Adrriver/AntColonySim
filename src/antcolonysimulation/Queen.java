@@ -23,7 +23,7 @@ public class Queen extends Ant {
     }
     
     @Override
-    public boolean expire() {
+    public boolean hasExpired() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -48,7 +48,7 @@ public class Queen extends Ant {
     }
 
     @Override
-    public int position() {
+    public int getPosition() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
@@ -65,6 +65,11 @@ public class Queen extends Ant {
 
     @Override
     public int getID() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setPosition(int pos) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

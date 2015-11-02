@@ -149,45 +149,45 @@ public class AntColony implements SimulationEventListener {
                 //Loops continuously through time cycle construct
             public boolean startSimulation(){
                 
+                timer = new Timer(1000, this);
+                timer.start();
                 
                 
-                
-                
-                return false;
+                return true;
             }
             //Peforms one iteration of time cycle, that is, individual 1-turn 
             public void stepThroughSim(){
+                Queen.hatchMember();
                 
                 for(int i = 0; i < colonyMemberList.size(); i++){
-                    Ant currentAnt = (Ant)colonyMemberList.get(i);
-                    
+                    Ant currentAnt = (Ant)colonyMemberList.get(i);                    
+                        currentAnt.move();
                 }
                 
                 
             }
             
-            
-            
-            public static void addMember(Ant newAnt){
-                colonyMemberList.addLast(newAnt);
-            }    
-
-        @Override
+            @Override
         public void actionPerformed(ActionEvent e) {
-            timer = new Timer(1000, this);
-                timer.start();
+                            
             if(Queen.hasExpired() == true)
                 timer.stop();
             else
                 stepThroughSim();
         }
             
+            public static void addMember(Ant newAnt){
+                colonyMemberList.addLast(newAnt);
+            }    
+
+        
+            
         }
         
     /* Queen class defined below */  
     private static class Queen {
         private static int lifeSpan;     
-        private static Random rand;
+        private static Random rand = new Random();
         private static int ID;
         private static int foodSupply;
         private static int hatchID;
@@ -200,6 +200,7 @@ public class AntColony implements SimulationEventListener {
         }
                 
         private static void hatchMember(){
+            
             int type = rand.nextInt(4) + 1;
             hatchID++;
             if(type == 3 || type == 4){

@@ -9,7 +9,7 @@ public class Square {
     
     private int unitsOfFood;
     private int unitsOfPheromone;
-    private int open;
+    private boolean open;
     private ColonyNodeView colNodeView;
     private int bala;
     private int scouts;
@@ -18,7 +18,7 @@ public class Square {
     
     
     public Square(){                      
-        setRevealed(-1);
+        setRevealed(false);
         setNumBala(0);
         setNumScout(0);
         setNumSoldier(0);
@@ -42,19 +42,13 @@ public class Square {
         return this.unitsOfPheromone;      
     }
     
-    public void setRevealed(int status){
+    public void setRevealed(boolean status){
         this.open = status; // '-1' == not revealed, '-2' == revealed
     }
     
     public boolean isRevealed(){
-        boolean revealed = false;
         
-        if(this.open == -1){
-            revealed = false;
-        } else if( this.open == -2){
-            revealed = true;
-        }
-            return revealed;
+            return this.open;
     }
     
     public void setFood(int units){

@@ -24,6 +24,7 @@ public class Scout extends Ant {
         setID(ID);
         lifeSpan = 1.00;
         position = 364;
+        setPosition(position);
         expired = false;
     }
     
@@ -45,42 +46,53 @@ public class Scout extends Ant {
                                     getPosition() + 1, getPosition() - 1};
         
         Random nextMove = new Random();
-        int next = nextMove.nextInt(7);
+        int next;
         
-        while(next > 728 || next < 0){
-            next = nextMove.nextInt(7);
-        }
+        do {
+            next = possibleMoves[nextMove.nextInt(7)];
+        } while(next > 728 || next < 0 || next == 364);
         
+                   
         
-        
-        AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementScoutCnt();                        
-            //Updates Square object in grid to reflect new position of this forager
-            AntColony.Environment.gridContainer.getGridSquare(
-                    next).incrementScoutCnt();
-            //Update colonyNodeViews to reflect current position of this forager ant
+        if(getPosition() != 364){
+            AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementScoutCnt();   
+            //Update colonyNodeViews to reflect current position of this scout ant
+            
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setScoutCount(
-            AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout() - 1);
+            AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout());         
+        
+        }            
+           
             //if this ant was the only ant in the Square object being left, then hide its icon
             if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout() == 0)
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideScoutIcon();
             
-            AntColony.Environment.gridContainer.getGridSquare(next).getColNodeView().setScoutCount(
-            AntColony.Environment.gridContainer.getGridSquare(next).getNumScout() + 1);
+            setPosition(next);
             
-            AntColony.Environment.gridContainer.getGridSquare(next).getColNodeView().showNode();
+            //Updates Square object in grid to reflect new position of this scout
+            AntColony.Environment.gridContainer.getGridSquare(next).incrementScoutCnt();
             
-            if(AntColony.Environment.gridContainer.getGridSquare(next).getNumScout() == 0)
+            AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setScoutCount(
+            AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout());
+                        
+            AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().showNode();
+            
+            if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout() == 1)
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().showScoutIcon();
+            
+            //reveal square for colony
+            AntColony.Environment.gridContainer.getGridSquare(getPosition()).setRevealed(true);
+             System.out.println(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout());
     }
     
     @Override
     public void setPosition(int pos) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.position = pos;
     }
 
     @Override
     public int getPosition() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.position;   
     }
     
     @Override
@@ -109,7 +121,7 @@ public class Scout extends Ant {
     @Override
     public void setID(int ID) {
         
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.ID = ID;
     }
     @Override
     public int getID(){
