@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
+import javafx.scene.paint.Color;
 import javax.swing.Timer;
 
 /**
@@ -21,7 +22,7 @@ public class AntColony implements SimulationEventListener {
     private ColonyView colonyView;
     private Environment environment;
     private static ArrayList cnvArray; //Stores ColonyNodeView instances which comprise visual aspect of the environment grid
-    
+    private static int day = 1; //Simulation day
     
     public AntColony(){
         
@@ -156,15 +157,34 @@ public class AntColony implements SimulationEventListener {
                 return true;
             }
             //Peforms one iteration of time cycle, that is, individual 1-turn 
-            public void stepThroughSim(){
+            public void stepThroughSim(){                
                 Queen.hatchMember();
                 
                 for(int i = 0; i < colonyMemberList.size(); i++){
                     Ant currentAnt = (Ant)colonyMemberList.get(i);                    
-                        currentAnt.move();
+                        currentAnt.move();                        
+                        currentAnt.ageAnt();
                 }
                 
-                
+                for(int i = 0; i < gridContainer.getGrid().size(); i++){
+                    //detect presence of any colony ant and an enemy in the same square, and initiate battle
+                    if(AntColony.Environment.gridContainer.getGridSquare(i).getNumBala() > 0 
+                            && (AntColony.Environment.gridContainer.getGridSquare(i).getNumForager() > 0 
+                            || AntColony.Environment.gridContainer.getGridSquare(i).getNumScout() > 0
+                            || AntColony.Environment.gridContainer.getGridSquare(i).getNumSoldier() > 0))
+                                {
+                                    //To-do: fight algorithm
+                                }
+                    //On 10th day, decay all pheromone levels by half their existing concentration
+                    if(day % 10 == 0){    
+                        AntColony.Environment.gridContainer.getGridSquare(i).setPheromone(("decay"));
+                        /* update GUI Square pheromone color */
+                        updateSquarePheromoneCol(i);
+                    }
+                }
+                       
+                //increment day
+                day += 1;   
             }
             
             @Override
@@ -265,6 +285,27 @@ public class AntColony implements SimulationEventListener {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
             
+    }
+    
+    public static void updateSquarePheromoneCol(int square){
+        int pheromoneLevel = AntColony.Environment.gridContainer.getGridSquare(square).getPheromone();
+        
+        if(pheromoneLevel > 0 && pheromoneLevel <= 200)
+            AntColony.Environment.gridContainer.getGridSquare(square).getColNodeView().setBackground(java.awt.Color.magenta);
+        else if(pheromoneLevel > 200 && pheromoneLevel <= 400)
+            AntColony.Environment.gridContainer.getGridSquare(square).getColNodeView().setBackground(java.awt.Color.blue);
+        else if(pheromoneLevel > 400 && pheromoneLevel <= 600)
+            AntColony.Environment.gridContainer.getGridSquare(square).getColNodeView().setBackground(java.awt.Color.green);
+        else if(pheromoneLevel > 600 && pheromoneLevel <= 800)
+            AntColony.Environment.gridContainer.getGridSquare(square).getColNodeView().setBackground(java.awt.Color.yellow);
+        else if(pheromoneLevel > 800 && pheromoneLevel <= 1000)
+            AntColony.Environment.gridContainer.getGridSquare(square).getColNodeView().setBackground(java.awt.Color.orange);
+        else if(pheromoneLevel > 1000)
+            AntColony.Environment.gridContainer.getGridSquare(square).getColNodeView().setBackground(java.awt.Color.red);
+        else {
+            AntColony.Environment.gridContainer.getGridSquare(square).getColNodeView().setBackground(
+                    AntColony.Environment.gridContainer.getGridSquare(square).getColNodeView().getBackground());
+        }
     }
     
     /*private class Scout extends Ant{

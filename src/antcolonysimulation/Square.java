@@ -33,9 +33,11 @@ public class Square {
     public ColonyNodeView getColNodeView(){
         return colNodeView;
     }
-    public void setPheromone(int units){
-        
-        this.unitsOfPheromone = units;
+    public void setPheromone(String change){
+        if(change.equals("grow"))
+            this.unitsOfPheromone += 10;
+        else if(change.equals("decay"))            
+            this.unitsOfPheromone = this.unitsOfPheromone / 2 >= 0? this.unitsOfPheromone/2 : 0 ;            
     }
     public int getPheromone(){
         
@@ -51,8 +53,8 @@ public class Square {
             return this.open;
     }
     
-    public void setFood(int units){
-        this.unitsOfFood = units;
+    public void decrementFood(){
+        this.unitsOfFood--;
     }       
     
    public int getFood(){

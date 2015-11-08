@@ -44,6 +44,9 @@ public class SquareContainer {
         return (Square) grid.get(i);
     }
     
+    public ArrayList getGrid(){
+        return grid;
+    }
     
 }    
 
