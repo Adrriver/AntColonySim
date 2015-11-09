@@ -22,10 +22,18 @@ public class Scout extends Ant {
     
     public Scout(int ID){
         setID(ID);
-        lifeSpan = 1.00;
+        lifeSpan = 3650;
         position = 364;
         setPosition(position);
         expired = false;
+        AntColony.Environment.gridContainer.getGridSquare(363).setRevealed(true);
+        AntColony.Environment.gridContainer.getGridSquare(365).setRevealed(true);
+        AntColony.Environment.gridContainer.getGridSquare(337).setRevealed(true);
+        AntColony.Environment.gridContainer.getGridSquare(336).setRevealed(true);
+        AntColony.Environment.gridContainer.getGridSquare(338).setRevealed(true);
+        AntColony.Environment.gridContainer.getGridSquare(490).setRevealed(true);
+        AntColony.Environment.gridContainer.getGridSquare(491).setRevealed(true);
+        AntColony.Environment.gridContainer.getGridSquare(392).setRevealed(true);
     }
     
     
@@ -47,12 +55,15 @@ public class Scout extends Ant {
         
         Random nextMove = new Random();
         int next;
-        
+        int move;
         do {
-            next = possibleMoves[nextMove.nextInt(7)];
+            move = nextMove.nextInt(7);
+            next = possibleMoves[move];
+            
         } while(next > 728 || next < 0 || next == 364);
         
-                   
+        
+            
         
         if(getPosition() != 364){
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementScoutCnt();   
@@ -82,7 +93,7 @@ public class Scout extends Ant {
             
             //reveal square for colony
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).setRevealed(true);
-             System.out.println(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout());
+             
     }
     
     @Override

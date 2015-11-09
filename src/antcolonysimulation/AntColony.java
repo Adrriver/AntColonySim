@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
+import javafx.scene.paint.Color;
 import javax.swing.Timer;
 
 /**
@@ -21,14 +22,25 @@ public class AntColony implements SimulationEventListener {
     private ColonyView colonyView;
     private Environment environment;
     private static ArrayList cnvArray; //Stores ColonyNodeView instances which comprise visual aspect of the environment grid
-    
+    private static int turn; //Simulation day
+    private static javax.swing.Timer timer;
     
     public AntColony(){
         
-        antSimGUI = new AntSimGUI(); //new and only GUI instance
         colonyView = new ColonyView(27, 27);
-        antSimGUI.initGUI(colonyView);
+        
+        reset();        
+    }
+        
+    public void reset(){
+        turn = 1;
+        
         ColonyNodeView v;
+        
+        
+        colonyView = new ColonyView(27, 27);
+        antSimGUI = new AntSimGUI(); //new and only GUI instance
+        antSimGUI.initGUI(colonyView);
         
         cnvArray = new ArrayList();
         
@@ -54,14 +66,15 @@ public class AntColony implements SimulationEventListener {
             //initialize the 8 cells adjacent to the Queen's
             } else if( (x == 12 && y == 13) || (x == 14 && y == 13) || (x==12 && y==12) || (x==13 && y==12) || (x==14 && y==12)
                         || (x==12 && y==14) || (x==13 && y==14) || (x==14 && y==14)){
-                colonyView.addColonyNodeView((ColonyNodeView) cnvArray.get(i), x, y);
+                colonyView.addColonyNodeView((ColonyNodeView) cnvArray.get(i), y, x);
                 v = (ColonyNodeView) cnvArray.get(i);               
-                v.setID("[" + String.valueOf(x) + "," + String.valueOf(y) + "]");
+                v.setID("[" + String.valueOf(y) + "," + String.valueOf(x) + "]");
+                
                 v.showNode();
             } else {                                                                    //add all ColonyNodeView objects to then
-                colonyView.addColonyNodeView((ColonyNodeView)cnvArray.get(i), x, y);
+                colonyView.addColonyNodeView((ColonyNodeView)cnvArray.get(i), y, x);
                 v = (ColonyNodeView)cnvArray.get(i);
-                v.setID("[" + String.valueOf(x) + "," + String.valueOf(y) + "]");//be read by (non-static) Square.setColonyNodeView
+                v.setID("[" + String.valueOf(y) + "," + String.valueOf(x) + "]");//be read by (non-static) Square.setColonyNodeView
             }                                                            //method, thereby registering a cnv to push to
             
             if((y+1) % 27 == 0){               
@@ -73,10 +86,10 @@ public class AntColony implements SimulationEventListener {
         
         environment = new Environment(colonyView, cnvArray);
         
+        timer = new Timer(1000, environment);
         
         antSimGUI.addSimulationEventListener(this);
     }
-        
     public static ArrayList getCnvArray(){
         return cnvArray;
     }
@@ -88,14 +101,20 @@ public class AntColony implements SimulationEventListener {
         int eType = simEvent.getEventType();
         /* Initialize per normal setup specs */
         if(eType == SimulationEvent.NORMAL_SETUP_EVENT){
-            environment = null;
-            environment = new Environment(colonyView, cnvArray);       
+            timer.stop();
+            antSimGUI.dispose();
+            reset();
         } else if ( eType == SimulationEvent.QUEEN_TEST_EVENT){            
             Queen.hatchMember();
         } else if ( eType == SimulationEvent.SCOUT_TEST_EVENT){
             
         } else if ( eType == SimulationEvent.FORAGER_TEST_EVENT){
-            
+            Forager testForager = new Forager(-1);
+            Environment.addMember(testForager);
+            for(int i = 10000; i >=0; i--){
+                testForager.move();
+                testForager.ageAnt();
+            }
         } else if ( eType == SimulationEvent.SOLDIER_TEST_EVENT){
             
         } else if ( eType == SimulationEvent.RUN_EVENT){
@@ -113,12 +132,15 @@ public class AntColony implements SimulationEventListener {
         protected static SquareContainer gridContainer;
         private static LinkedList colonyMemberList;
         int ID = 1;
-        javax.swing.Timer timer;
+        
         
             /* GUI action provided by button "Normal Setup" initializes Environment objects */
             public Environment(ColonyView cv, ArrayList cnv){
                 colonyMemberList = new LinkedList();     
                 colonyMemberList.clear();
+                
+                gridContainer = new SquareContainer(cv, cnv);
+                gridContainer.getGridSquare(364).getColNodeView().showQueenIcon();
                 
                 /* Create initial group of ants and insert them into LinkedList collection */
                 for( int i = 0; i < 64; i++){
@@ -132,8 +154,7 @@ public class AntColony implements SimulationEventListener {
                 
                 }
                 
-                gridContainer = new SquareContainer(cv, cnv);
-                gridContainer.getGridSquare(364).getColNodeView().showQueenIcon();
+                
                 //Random number aids in decision of whether to initialize grid square with food (25%)
                 double chance = .25;
                 //random food unit amount between 500 and 1000 units
@@ -141,30 +162,56 @@ public class AntColony implements SimulationEventListener {
                 for(int i = 0; i < 729; i++){
                     double outcome = Math.random();
                         if(outcome < chance && i != 364){//outcome falls within 25% probability, simulating frequency of outcomes                                                       
-                            gridContainer.getGridSquare(i).getColNodeView().setFoodAmount(foodAmount.nextInt(501) + 500);                      
-                        }
+                            int foodUnits = foodAmount.nextInt(501) + 500;
+                            gridContainer.getGridSquare(i).getColNodeView().setFoodAmount(foodUnits); 
+                            AntColony.Environment.gridContainer.getGridSquare(i).setFood(foodUnits);
+                        } else if( i == 364)
+                            AntColony.Environment.gridContainer.getGridSquare(i).setFood(1000);
                             
                 }
             }
                 //Loops continuously through time cycle construct
-            public boolean startSimulation(){
-                
-                timer = new Timer(1000, this);
-                timer.start();
-                
-                
+            public boolean startSimulation(){                                
+                timer.start();                                
                 return true;
             }
             //Peforms one iteration of time cycle, that is, individual 1-turn 
-            public void stepThroughSim(){
-                Queen.hatchMember();
+            public void stepThroughSim(){  
                 
+                Queen.consumeFood();
+                
+                //age queen each day
+                if(turn % 10 == 0 || turn == 1){                    
+                    Queen.hatchMember();
+                    Queen.ageAnt();
+                    
+                }
                 for(int i = 0; i < colonyMemberList.size(); i++){
-                    Ant currentAnt = (Ant)colonyMemberList.get(i);                    
-                        currentAnt.move();
+                    Ant currentAnt = (Ant)colonyMemberList.get(i);
+                        currentAnt.move();                        
+                        currentAnt.ageAnt();
                 }
                 
-                
+                for(int i = 0; i < gridContainer.getGrid().size(); i++){
+                    //detect presence of any colony ant and an enemy in the same square, and initiate battle
+                    if(AntColony.Environment.gridContainer.getGridSquare(i).getNumBala() > 0 
+                            && (AntColony.Environment.gridContainer.getGridSquare(i).getNumForager() > 0 
+                            || AntColony.Environment.gridContainer.getGridSquare(i).getNumScout() > 0
+                            || AntColony.Environment.gridContainer.getGridSquare(i).getNumSoldier() > 0))
+                                {
+                                    //To-do: fight algorithm
+                                }
+                    //On 10th day, decay all pheromone levels by half their existing concentration
+                    if(turn % 10 == 0){    
+                        AntColony.Environment.gridContainer.getGridSquare(i).setPheromone(("decay"));
+                        AntColony.Environment.gridContainer.getGridSquare(i).getColNodeView().setPheromoneLevel(
+                            AntColony.Environment.gridContainer.getGridSquare(i).getPheromone());
+                        
+                    }
+                }
+                       
+                //increment day
+                turn++;   
             }
             
             @Override
@@ -195,7 +242,7 @@ public class AntColony implements SimulationEventListener {
         
         private Queen(){
             ID = 0;
-            lifeSpan = 20;
+            lifeSpan = 73000;
             rand = new Random();
         }
                 
@@ -213,9 +260,13 @@ public class AntColony implements SimulationEventListener {
                 
             
         }
+        
 
-        private void consumeFood(int units){
-              foodSupply += units;
+        public static void consumeFood(){
+              foodSupply--;
+              AntColony.Environment.gridContainer.getGridSquare(364).decrementFood();
+              AntColony.Environment.gridContainer.getGridSquare(364).getColNodeView().setFoodAmount(
+                    AntColony.Environment.gridContainer.getGridSquare(364).getFood());
         }
 
         
@@ -253,8 +304,8 @@ public class AntColony implements SimulationEventListener {
 
 
         
-        public void ageAnt() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public static void ageAnt() {
+            lifeSpan--; //decrement by one var lifeSpan, which keeps track of the queens age by days
         }
        
         public void setID(int ID){
@@ -266,6 +317,9 @@ public class AntColony implements SimulationEventListener {
         }
             
     }
+    
+    
+    
     
     /*private class Scout extends Ant{
         private int ID;

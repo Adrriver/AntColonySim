@@ -24,6 +24,7 @@ public class Square {
         setNumSoldier(0);
         setNumForager(0);
         
+        
     }        
     
     public void setColonyNodeView(ColonyNodeView cnv){
@@ -33,9 +34,15 @@ public class Square {
     public ColonyNodeView getColNodeView(){
         return colNodeView;
     }
-    public void setPheromone(int units){
-        
-        this.unitsOfPheromone = units;
+    public void setPheromone(String change){
+        switch (change) {
+            case "grow":
+                this.unitsOfPheromone += 10;
+                break;
+            case "decay":            
+                this.unitsOfPheromone = (int) (this.unitsOfPheromone / 2.00 <= 1? 0 : (int)this.unitsOfPheromone / 2.00);
+                break;
+        }
     }
     public int getPheromone(){
         
@@ -51,9 +58,13 @@ public class Square {
             return this.open;
     }
     
-    public void setFood(int units){
-        this.unitsOfFood = units;
+    public void decrementFood(){
+        this.unitsOfFood--;
     }       
+    
+   public void setFood(int units){
+       this.unitsOfFood = units;
+   } 
     
    public int getFood(){
         
