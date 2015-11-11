@@ -18,11 +18,11 @@ import javax.swing.Timer;
  */
 public class AntColony implements SimulationEventListener {
 
-    private AntSimGUI antSimGUI;
+    private static AntSimGUI antSimGUI;
     private ColonyView colonyView;
     private Environment environment;
     private static ArrayList cnvArray; //Stores ColonyNodeView instances which comprise visual aspect of the environment grid
-    private static int turn; //Simulation day
+    private static int turn, day; //Simulation day
     private static javax.swing.Timer timer;
     
     public AntColony(){
@@ -34,6 +34,7 @@ public class AntColony implements SimulationEventListener {
         
     public void reset(){
         turn = 1;
+        day = 0;
         
         ColonyNodeView v;
         
@@ -93,7 +94,7 @@ public class AntColony implements SimulationEventListener {
     public static ArrayList getCnvArray(){
         return cnvArray;
     }
-
+    
    
     
     @Override
@@ -177,19 +178,24 @@ public class AntColony implements SimulationEventListener {
             }
             //Peforms one iteration of time cycle, that is, individual 1-turn 
             public void stepThroughSim(){  
-                
+                antSimGUI.setTime("Turns: " + turn + " : " + "Day: " + day);
                 Queen.consumeFood();
                 
                 //age queen each day
                 if(turn % 10 == 0 || turn == 1){                    
                     Queen.hatchMember();
                     Queen.ageAnt();
+                    day++;
                     
                 }
                 for(int i = 0; i < colonyMemberList.size(); i++){
                     Ant currentAnt = (Ant)colonyMemberList.get(i);
-                        currentAnt.move();                        
-                        currentAnt.ageAnt();
+                       
+                        currentAnt.move();     
+                            if(currentAnt.hasExpired())                                   
+                                colonyMemberList.remove(i);                  
+                            
+                        
                 }
                 
                 for(int i = 0; i < gridContainer.getGrid().size(); i++){
@@ -273,7 +279,7 @@ public class AntColony implements SimulationEventListener {
         public static boolean hasExpired() {            
             return expired;
         }
-        public void setExpired(boolean status){
+        public static void setExpired(boolean status){
             expired = status;
             
         }
@@ -301,15 +307,20 @@ public class AntColony implements SimulationEventListener {
         public int position() {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-
-
         
-        public static void ageAnt() {
-            lifeSpan--; //decrement by one var lifeSpan, which keeps track of the queens age by days
+        public static boolean ageAnt() {
+        if(lifeSpan - 1 != 0){
+            lifeSpan -= 1;
+            return false;
         }
+        else{
+            setExpired(true);
+            return true;
+        }
+    }
        
         public void setID(int ID){
-            this.ID = ID;
+            ID = ID;
         }
         
         public int getID() {

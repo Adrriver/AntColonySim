@@ -16,7 +16,7 @@ public class Scout extends Ant {
     //id
     private int ID;
     //equal to decimal 10, decremented daily
-    private double lifeSpan;
+    private int lifeSpan;
     private int position;
     private boolean expired;
     
@@ -40,7 +40,7 @@ public class Scout extends Ant {
     @Override
     public boolean hasExpired() {
         
-        return true;
+        return this.expired;
     }
     public void setExpired(boolean status){
         this.expired = status;
@@ -48,6 +48,8 @@ public class Scout extends Ant {
     
     @Override
     public void move() {
+        
+        if(!hasExpired()){
         
         int[] possibleMoves = {getPosition() + 26, getPosition() + 27, getPosition() + 28, 
                                 getPosition() - 26, getPosition() - 27, getPosition() - 28,
@@ -59,8 +61,9 @@ public class Scout extends Ant {
         do {
             move = nextMove.nextInt(7);
             next = possibleMoves[move];
-            
-        } while(next > 728 || next < 0 || next == 364);
+            System.out.println((getPosition() - 1) % 26 == 0);
+        } while(next > 728 || next < 0 || next == 364 || next % 27 == 0 || (
+                getPosition() % 27 == 0) && (next - 1) % 26 == 0);
         
         
             
@@ -93,6 +96,17 @@ public class Scout extends Ant {
             
             //reveal square for colony
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).setRevealed(true);
+            
+        } else {
+             if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout() == 1)
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideScoutIcon();
+                else{
+                AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementScoutCnt();
+                AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setScoutCount(
+                AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout());
+                }
+               
+        }           
              
     }
     
@@ -122,11 +136,19 @@ public class Scout extends Ant {
     }
 
     @Override
-    public void ageAnt() {
-        if(this.lifeSpan - 1 != 0)
-            this.lifeSpan -= .01;
-        else
+    public boolean ageAnt() {
+        if(this.lifeSpan - 1 != 0){
+            this.lifeSpan -= 1;
+            return false;
+        }
+        else{
             setExpired(true);
+            return true;
+        }
+    }
+    
+    public int getAge(){
+        return this.lifeSpan;
     }
 
     @Override

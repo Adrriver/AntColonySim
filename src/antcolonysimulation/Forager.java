@@ -18,7 +18,7 @@ public class Forager extends Ant{
     //id
     private int ID;
     //equal to decimal 10, decremented daily
-    private double lifeSpan;
+    private int lifeSpan;
     //log of ant moves
     private ArrayStack moveLog;
     //stores units of food ant possesses (wrapped integer 1)
@@ -47,13 +47,16 @@ public class Forager extends Ant{
     }
     @Override
     public boolean hasExpired() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return expired;
     }
     public void setExpired(boolean status){
         this.expired = status;
     }    
     @Override
     public void move() {
+                   
+           
+        if(!hasExpired()){
         if(mode == true){//if forager is in foraging mode...
             
             //called upon first move, which is out of the Queen's square
@@ -94,17 +97,23 @@ public class Forager extends Ant{
             if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getFood() > 0){                
                 setFood(1);
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementFood();
-                System.out.println(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getFood());
+                
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setFoodAmount(
                  AntColony.Environment.gridContainer.getGridSquare(getPosition()).getFood());
                 mode = false;
-                depositPheromone();
+                
             }
             
         } else {
             if(getPosition() != 364){
                 moveLog.pop();
                 
+                if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getPheromone() < 1000){
+                    depositPheromone();
+                    System.out.println("Pheromone level: " + 
+                            AntColony.Environment.gridContainer.getGridSquare(getPosition()).getPheromone());
+                }
+                    
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementForagerCnt();   
                 //Update colonyNodeViews to reflect current position of this scout ant
             
@@ -130,7 +139,8 @@ public class Forager extends Ant{
                 if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumForager() == 1)
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().showForagerIcon();
             
-                depositPheromone();
+                
+                    
             
             } else {
                 
@@ -142,7 +152,17 @@ public class Forager extends Ant{
                 
             }
         }
-       
+        } else {
+                 
+                if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumForager() == 1)
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideForagerIcon();
+                
+                AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementForagerCnt();
+                AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setForagerCount(
+                AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumForager());
+                
+                AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setFoodAmount(getFood());
+        }
     }
     
     public void depositPheromone(){
@@ -187,11 +207,19 @@ public class Forager extends Ant{
     }
 
     @Override
-    public void ageAnt() {
-        if(this.lifeSpan - 1 != 0)
-            this.lifeSpan--;
-        else
+    public boolean ageAnt() {
+        if(this.lifeSpan - 1 != 0){
+            this.lifeSpan -= 1;
+            return false;
+        }
+        else{
             setExpired(true);
+            return true;
+        }
+    }
+    
+    public int getAge(){
+        return this.lifeSpan;
     }
 
     @Override

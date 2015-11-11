@@ -26,7 +26,7 @@ public class Soldier extends Ant{
     }
     @Override
     public boolean hasExpired() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
 
     public void setExpired(boolean status){
@@ -40,7 +40,7 @@ public class Soldier extends Ant{
 
     @Override
     public void remove() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
@@ -59,13 +59,21 @@ public class Soldier extends Ant{
     }
 
     @Override
-    public void ageAnt() {
-        if(this.lifeSpan - 1 != 0)
-            this.lifeSpan--;
-        else
+    public boolean ageAnt() {
+        if(this.lifeSpan - 1 != 0){
+            this.lifeSpan -= 1;
+            return false;
+        }
+        else{
             setExpired(true);
+            return true;
+        }
     }
 
+    public int getAge(){
+        return this.lifeSpan;
+    }
+    
     @Override
     public void setID(int ID) {
         this.ID = ID;

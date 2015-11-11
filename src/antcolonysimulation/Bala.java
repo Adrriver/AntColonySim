@@ -55,10 +55,21 @@ public class Bala extends Ant{
 
   
     @Override
-    public void ageAnt() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean ageAnt() {
+        if(this.lifeSpan - 1 != 0){
+            this.lifeSpan -= 1;
+            return false;
+        }
+        else{
+            setExpired(true);
+            return true;
+        }
     }
 
+    @Override
+    public int getAge(){
+        return this.lifeSpan;
+    }
     @Override
     public void setID(int ID) {
         this.ID = ID;

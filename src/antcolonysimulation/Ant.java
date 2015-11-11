@@ -39,7 +39,9 @@ abstract public class Ant {
     //returns grid square of calling ant object
     public abstract int getPosition(); 
     //tracks days of ants life (10/lifetime)
-    public abstract void ageAnt();
+    public abstract boolean ageAnt();
+    //gets age of ant
+    public abstract int getAge();
     //sets ant's ID
     public abstract void setID(int ID);
     //gets ant's ID
