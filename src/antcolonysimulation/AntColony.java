@@ -154,8 +154,15 @@ public class AntColony implements SimulationEventListener {
                         colonyMemberList.addLast(new Scout(ID++));
                 
                 }
-                
-                
+                //Reveal to ants initially open nodes
+                AntColony.Environment.gridContainer.getGridSquare(363).setRevealed(true);
+                AntColony.Environment.gridContainer.getGridSquare(365).setRevealed(true);
+                AntColony.Environment.gridContainer.getGridSquare(337).setRevealed(true);
+                AntColony.Environment.gridContainer.getGridSquare(336).setRevealed(true);
+                AntColony.Environment.gridContainer.getGridSquare(338).setRevealed(true);
+                AntColony.Environment.gridContainer.getGridSquare(490).setRevealed(true);
+                AntColony.Environment.gridContainer.getGridSquare(491).setRevealed(true);
+                AntColony.Environment.gridContainer.getGridSquare(392).setRevealed(true);
                 //Random number aids in decision of whether to initialize grid square with food (25%)
                 double chance = .25;
                 //random food unit amount between 500 and 1000 units

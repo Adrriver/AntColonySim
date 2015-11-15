@@ -113,6 +113,14 @@ public class Square {
         this.foragers--;        
     }
     
+    public void incrementSoldierCnt(){
+        this.soldiers++;
+    }
+    
+    public void decrementSoldierCnt(){
+        this.soldiers--;
+    }
+    
     public int getNumSoldier(){
         return this.soldiers;
     }

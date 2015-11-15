@@ -6,6 +6,7 @@
 package antcolonysimulation;
 
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  *
@@ -19,10 +20,13 @@ public class Soldier extends Ant{
     private int lifeSpan;
     private int position;
     private boolean expired;
+    private boolean mode; //true == scout mode; false == attack mode
     
     public Soldier(int ID){
         setID(ID);
         lifeSpan = 3650;
+        mode = true;
+        position = 364;
     }
     @Override
     public boolean hasExpired() {
@@ -35,7 +39,77 @@ public class Soldier extends Ant{
     
     @Override
     public void move() {
-      
+        //scout mode
+        if(mode){
+            
+          if(!hasExpired()){
+        
+            int[] possibleMoves = {getPosition() + 26, getPosition() + 27, getPosition() + 28, 
+                                     getPosition() - 26, getPosition() - 27, getPosition() - 28,
+                                        getPosition() + 1, getPosition() - 1};
+        
+                Random nextMove = new Random();
+                int next;
+                int move;
+                do {
+                    int bala = detectBala(possibleMoves);
+                    if(bala == 0){                
+                        move = nextMove.nextInt(7);
+                        next = possibleMoves[move];
+                    } else {
+                        next = bala;
+                        mode = false;
+                    }
+
+                } while(next > 728 || next < 0 || next == 364 || next % 27 == 0 || (
+                        getPosition() % 27 == 0) && (next - 1) % 26 == 0 || 
+                           AntColony.Environment.gridContainer.getGridSquare(next).isRevealed() == false);
+
+
+
+
+
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementSoldierCnt();
+                    //Update colonyNodeViews to reflect current position of this scout ant
+
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setSoldierCount(
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier());         
+
+
+
+                    //if this ant was the only ant in the Square object being left, then hide its icon
+                    if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier() == 0)
+                        AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideSoldierIcon();
+
+                    setPosition(next);
+
+                    //Updates Square object in grid to reflect new position of this scout
+                    AntColony.Environment.gridContainer.getGridSquare(next).incrementSoldierCnt();
+
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setSoldierCount(
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier());
+
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().showNode();
+
+                    if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier() == 1)
+                        AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().showSoldierIcon();
+
+                    //reveal square for colony
+
+
+                } else {
+                     if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier() == 1)
+                            AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideSoldierIcon();
+                        else{
+                        AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementSoldierCnt();
+                        AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setSoldierCount(
+                        AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier());
+                        }
+
+                }  
+        } else {//attack mode
+            act();
+        }
     }
 
     @Override
@@ -49,13 +123,13 @@ public class Soldier extends Ant{
     }
 
     @Override
-    public void act() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void act() { //attack!
+        
     }
 
     @Override
     public int getPosition() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.position; 
     }
 
     @Override
@@ -85,6 +159,15 @@ public class Soldier extends Ant{
 
     @Override
     public void setPosition(int pos) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.position = pos;
+    }
+    
+    public int detectBala(int[] pMoves){
+        for(int i = 0; i < pMoves.length; i++){            
+            if(AntColony.Environment.gridContainer.getGridSquare(pMoves[i]).getNumBala() != 0){
+                return pMoves[i];
+            }
+        } 
+        return 0;
     }
 }

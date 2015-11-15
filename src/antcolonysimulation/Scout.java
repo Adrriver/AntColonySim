@@ -26,14 +26,7 @@ public class Scout extends Ant {
         position = 364;
         setPosition(position);
         expired = false;
-        AntColony.Environment.gridContainer.getGridSquare(363).setRevealed(true);
-        AntColony.Environment.gridContainer.getGridSquare(365).setRevealed(true);
-        AntColony.Environment.gridContainer.getGridSquare(337).setRevealed(true);
-        AntColony.Environment.gridContainer.getGridSquare(336).setRevealed(true);
-        AntColony.Environment.gridContainer.getGridSquare(338).setRevealed(true);
-        AntColony.Environment.gridContainer.getGridSquare(490).setRevealed(true);
-        AntColony.Environment.gridContainer.getGridSquare(491).setRevealed(true);
-        AntColony.Environment.gridContainer.getGridSquare(392).setRevealed(true);
+        
     }
     
     
