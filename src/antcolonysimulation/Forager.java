@@ -67,7 +67,7 @@ public class Forager extends Ant{
             
             if(true){
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementForagerCnt();   
-                //Update colonyNodeViews to reflect current position of this scout ant
+                //Update colonyNodeViews to reflect current position of this forager ant
             
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setForagerCount(
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumForager());         
@@ -143,6 +143,8 @@ public class Forager extends Ant{
                     
             
             } else {
+                
+                //AntColony.Environment.gridContainer.getGridSquare(getPosition()).incrementForagerCnt();
                 
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).setFood(
                         AntColony.Environment.gridContainer.getGridSquare(getPosition()).getFood() + getFood());

@@ -68,14 +68,14 @@ public class Scout extends Ant {
         
             
         
-        if(getPosition() != 364){
+        
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementScoutCnt();   
             //Update colonyNodeViews to reflect current position of this scout ant
             
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setScoutCount(
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout());         
         
-        }            
+                   
            
             //if this ant was the only ant in the Square object being left, then hide its icon
             if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout() == 0)

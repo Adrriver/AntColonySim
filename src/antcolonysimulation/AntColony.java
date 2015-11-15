@@ -144,7 +144,7 @@ public class AntColony implements SimulationEventListener {
                 gridContainer.getGridSquare(364).getColNodeView().showQueenIcon();
                 
                 /* Create initial group of ants and insert them into LinkedList collection */
-                for( int i = 0; i < 64; i++){
+                for( int i = 0; i < 63; i++){
                     
                     if(i < 10)//10 Soldiers
                         colonyMemberList.addLast(new Soldier(ID++));
@@ -172,7 +172,7 @@ public class AntColony implements SimulationEventListener {
                 }
             }
                 //Loops continuously through time cycle construct
-            public boolean startSimulation(){                                
+            public boolean startSimulation(){                  
                 timer.start();                                
                 return true;
             }
@@ -181,7 +181,7 @@ public class AntColony implements SimulationEventListener {
                 antSimGUI.setTime("Turns: " + turn + " : " + "Day: " + day);
                 Queen.consumeFood();
                 
-                //age queen each day
+                /*age queen each day*/
                 if(turn % 10 == 0 || turn == 1){                    
                     Queen.hatchMember();
                     Queen.ageAnt();

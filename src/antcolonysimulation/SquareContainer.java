@@ -24,6 +24,14 @@ public class SquareContainer {
         
         for(int i = 0; i < 729; i++){
             grid.add(new Square());
+            
+            if(i == 364){
+                ((Square) grid.get(i)).setNumForager(50);
+                ((Square) grid.get(i)).setNumScout(4);
+                ((Square) grid.get(i)).setNumSoldier(10);
+                
+            }
+                
         }
         
         int j = 0, x = 0, y = 0;

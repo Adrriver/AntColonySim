@@ -23,8 +23,6 @@ public class Square {
         setNumScout(0);
         setNumSoldier(0);
         setNumForager(0);
-        
-        
     }        
     
     public void setColonyNodeView(ColonyNodeView cnv){
