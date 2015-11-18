@@ -40,11 +40,14 @@ abstract public class Ant {
     public abstract int getPosition(); 
     //tracks days of ants life (10/lifetime)
     public abstract boolean ageAnt();
+    //sets life status, usually to false
+    public abstract void setExpired(boolean val);
     //gets age of ant
     public abstract int getAge();
     //sets ant's ID
     public abstract void setID(int ID);
     //gets ant's ID
     public abstract int getID();
+    
     
 }

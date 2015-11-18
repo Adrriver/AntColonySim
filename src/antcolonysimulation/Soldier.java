@@ -40,7 +40,7 @@ public class Soldier extends Ant{
     @Override
     public void move() {
         //scout mode
-        if(mode){
+        
             
           if(!hasExpired()){
         
@@ -65,9 +65,9 @@ public class Soldier extends Ant{
                         getPosition() % 27 == 0) && (next - 1) % 26 == 0 || 
                            AntColony.Environment.gridContainer.getGridSquare(next).isRevealed() == false);
 
-
-
-
+            
+                
+            if(mode){      
 
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementSoldierCnt();
                     //Update colonyNodeViews to reflect current position of this scout ant
@@ -96,6 +96,10 @@ public class Soldier extends Ant{
 
                     //reveal square for colony
 
+            } else {//attack mode
+                act();
+                mode = true;
+            }
 
                 } else {
                      if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier() == 1)
@@ -105,11 +109,11 @@ public class Soldier extends Ant{
                         AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setSoldierCount(
                         AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier());
                         }
+                     
+                     
 
                 }  
-        } else {//attack mode
-            act();
-        }
+        
     }
 
     @Override
@@ -163,11 +167,28 @@ public class Soldier extends Ant{
     }
     
     public int detectBala(int[] pMoves){
-        for(int i = 0; i < pMoves.length; i++){            
+        
+        boolean detected = false;
+        int i, location = 0;
+        
+        
+            i = 0;      
+                
+        while(i < pMoves.length){            
+            
+          if(pMoves[location] > 728 || pMoves[location] < 0 || pMoves[location] % 27 == 0 || 
+                (getPosition() % 27 == 0) && (pMoves[location] - 1) % 26 == 0 ){
             if(AntColony.Environment.gridContainer.getGridSquare(pMoves[i]).getNumBala() != 0){
-                return pMoves[i];
+                detected = true;
+                location = i;
             }
+          }
+              
+            i++;
         } 
-        return 0;
+        
+        
+        
+        return detected ? pMoves[location]:0;
     }
 }

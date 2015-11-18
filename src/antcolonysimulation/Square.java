@@ -121,6 +121,14 @@ public class Square {
         this.soldiers--;
     }
     
+    public void incrementBalaCnt(){
+        this.bala++;
+    }
+    
+    public void decrementBalaCnt(){
+        this.bala--;
+    }
+    
     public int getNumSoldier(){
         return this.soldiers;
     }

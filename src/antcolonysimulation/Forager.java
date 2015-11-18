@@ -110,8 +110,7 @@ public class Forager extends Ant{
                 
                 if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getPheromone() < 1000){
                     depositPheromone();
-                    System.out.println("Pheromone level: " + 
-                            AntColony.Environment.gridContainer.getGridSquare(getPosition()).getPheromone());
+                    
                 }
                     
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementForagerCnt();   
@@ -164,6 +163,8 @@ public class Forager extends Ant{
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumForager());
                 
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setFoodAmount(getFood());
+                AntColony.Environment.gridContainer.getGridSquare(getPosition()).setFood(
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getFood() + 1);
         }
     }
     

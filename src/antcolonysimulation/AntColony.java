@@ -28,7 +28,7 @@ public class AntColony implements SimulationEventListener {
     public AntColony(){
         
         colonyView = new ColonyView(27, 27);
-        
+    
         reset();        
     }
         
@@ -132,6 +132,7 @@ public class AntColony implements SimulationEventListener {
             
         protected static SquareContainer gridContainer;
         private static LinkedList colonyMemberList;
+        private static LinkedList bala;
         int ID = 1;
         
         
@@ -139,6 +140,9 @@ public class AntColony implements SimulationEventListener {
             public Environment(ColonyView cv, ArrayList cnv){
                 colonyMemberList = new LinkedList();     
                 colonyMemberList.clear();
+                
+                bala = new LinkedList();
+                bala.clear();
                 
                 gridContainer = new SquareContainer(cv, cnv);
                 gridContainer.getGridSquare(364).getColNodeView().showQueenIcon();
@@ -179,15 +183,23 @@ public class AntColony implements SimulationEventListener {
                 }
             }
                 //Loops continuously through time cycle construct
-            public boolean startSimulation(){                  
+            public boolean startSimulation(){ 
+               
                 timer.start();                                
                 return true;
             }
             //Peforms one iteration of time cycle, that is, individual 1-turn 
             public void stepThroughSim(){  
+                
+                Ant ant = null;
                 antSimGUI.setTime("Turns: " + turn + " : " + "Day: " + day);
                 Queen.consumeFood();
                 
+                double balaOutcome = Math.random();
+                
+                    if(balaOutcome < .03){
+                        Queen.hatchBala();
+                    }
                 /*age queen each day*/
                 if(turn % 10 == 0 || turn == 1){                    
                     Queen.hatchMember();
@@ -195,13 +207,39 @@ public class AntColony implements SimulationEventListener {
                     day++;
                     
                 }
-                for(int i = 0; i < colonyMemberList.size(); i++){
-                    Ant currentAnt = (Ant)colonyMemberList.get(i);
+                
+                for(int i = 0; i < bala.size(); i++){
+                    Bala currentBala = (Bala) bala.get(i);
+                    AntFrequency af = currentBala.moveBala();
+                    if(af.getKilled()){ //moveBala returns AntFrequency object representing ant battled or def. ant object
+                        for(int j = 0; j < colonyMemberList.size(); j++){
+                            ant = (Ant) colonyMemberList.get(j);
+                            
+                            if(currentBala.getPosition() == ant.getPosition()){
+                                
+                                ant.setExpired(true);
+                                System.out.println("Colony member lost!");
+                                
+                                
+                            }
+                        }
+                    }
+                }
+                
+                for(int k = 0; k < colonyMemberList.size(); k++){
+                    Ant currentAnt = (Ant)colonyMemberList.get(k);
                        
                         currentAnt.move();     
-                            if(currentAnt.hasExpired())                                   
-                                colonyMemberList.remove(i);                  
-                            
+                            if(currentAnt.hasExpired()){                                   
+                                colonyMemberList.remove(k);  
+                            if(colonyMemberList.get(k) instanceof Forager){
+                                AntColony.Environment.gridContainer.getGridSquare(ant.getPosition()).getColNodeView().hideForagerIcon();
+                            } else if(colonyMemberList.get(k) instanceof Scout){
+                                AntColony.Environment.gridContainer.getGridSquare(ant.getPosition()).getColNodeView().hideScoutIcon();
+                            } else {
+                                AntColony.Environment.gridContainer.getGridSquare(ant.getPosition()).getColNodeView().hideSoldierIcon();
+                            }
+                            }
                         
                 }
                 
@@ -274,7 +312,10 @@ public class AntColony implements SimulationEventListener {
             
         }
         
-
+        public static void hatchBala(){
+            hatchID++;
+            Environment.bala.addLast(new Bala(hatchID));
+        }
         public static void consumeFood(){
               foodSupply--;
               AntColony.Environment.gridContainer.getGridSquare(364).decrementFood();
