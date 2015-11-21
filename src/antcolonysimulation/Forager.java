@@ -177,16 +177,6 @@ public class Forager extends Ant{
     }
     
     @Override
-    public void remove() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean isSquareOpen() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void act() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -238,8 +228,8 @@ public class Forager extends Ant{
     public int sensePheromone(){
         int maxPher = 0, temp;
         int bestMove = 0;
-        int[] possibleMoves = {getPosition() + 26, getPosition() + 27, getPosition() + 28, 
-                                getPosition() - 26, getPosition() - 27, getPosition() - 28,
+        int[] possibleMoves = {getPosition() + 28, getPosition() - 27, getPosition() + 26, 
+                                getPosition() - 26, getPosition() + 27, getPosition() - 28,
                                     getPosition() + 1, getPosition() - 1};
         while(bestMove == 0){  
            

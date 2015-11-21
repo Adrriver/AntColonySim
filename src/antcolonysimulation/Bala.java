@@ -45,14 +45,15 @@ public class Bala extends Ant{
 
     @Override
     public void move(){
-        
+       //moveBala is implemented in place of this method 
     }
+    
     public AntFrequency moveBala() {
         if(!hasExpired()){
         
-        int[] possibleMoves = {getPosition() + 26, getPosition() + 27, getPosition() + 28, 
-                                getPosition() - 26, getPosition() - 27, getPosition() - 28,
-                                    getPosition() + 1, getPosition() - 1};
+        int[] possibleMoves = {getPosition() - 26, getPosition() + 27, getPosition() - 1, 
+                                getPosition() + 26, getPosition() - 27, getPosition() + 28,
+                                    getPosition() + 1, getPosition() - 28};
         
         Random nextMove = new Random();
         int next;
@@ -105,7 +106,7 @@ public class Bala extends Ant{
             
             
         } else {
-             if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumBala() == 1)
+             if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumBala() < 2)
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideBalaIcon();
                 else{
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementBalaCnt();
@@ -120,16 +121,7 @@ public class Bala extends Ant{
         return antFrequency;
     }
 
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean isSquareOpen() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
     @Override
     public void act(){
     
@@ -147,7 +139,7 @@ public class Bala extends Ant{
             itr.next();
         /* find type of ant lowest in frequency within square */
         while(itr.hasNext() && !complete){     
-            
+           
             sqFreq = (AntFrequency) itr.getCurrent();
             temp = sqFreq.getFreq();
            

@@ -35,6 +35,7 @@ public class Scout extends Ant {
         
         return this.expired;
     }
+    @Override
     public void setExpired(boolean status){
         this.expired = status;
     }
@@ -44,9 +45,9 @@ public class Scout extends Ant {
         
         if(!hasExpired()){
         
-        int[] possibleMoves = {getPosition() + 26, getPosition() + 27, getPosition() + 28, 
-                                getPosition() - 26, getPosition() - 27, getPosition() - 28,
-                                    getPosition() + 1, getPosition() - 1};
+        int[] possibleMoves = {getPosition() - 26, getPosition() + 27 , getPosition() - 28, 
+                                getPosition() + 26, getPosition() - 27, getPosition() + 28,
+                                    getPosition() + 1 , getPosition() - 1};
         
         Random nextMove = new Random();
         int next;
@@ -61,7 +62,7 @@ public class Scout extends Ant {
         
             
         
-        
+        if(getPosition() != 364)
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementScoutCnt();   
             //Update colonyNodeViews to reflect current position of this scout ant
             
@@ -93,11 +94,11 @@ public class Scout extends Ant {
         } else {
              if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout() == 1)
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideScoutIcon();
-                else{
+                
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementScoutCnt();
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setScoutCount(
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout());
-                }
+                
                
         }           
              
@@ -113,16 +114,6 @@ public class Scout extends Ant {
         return this.position;   
     }
     
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean isSquareOpen() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     @Override
     public void act() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

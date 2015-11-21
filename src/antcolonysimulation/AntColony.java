@@ -5,11 +5,10 @@
  */
 package antcolonysimulation;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
-import javafx.scene.paint.Color;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
@@ -185,7 +184,11 @@ public class AntColony implements SimulationEventListener {
                 //Loops continuously through time cycle construct
             public boolean startSimulation(){ 
                
-                timer.start();                                
+                timer.start();   
+                
+                
+                AntColony.Environment.gridContainer.getGridSquare(364).setNumScout(0);
+                AntColony.Environment.gridContainer.getGridSquare(364).setNumSoldier(0);
                 return true;
             }
             //Peforms one iteration of time cycle, that is, individual 1-turn 
@@ -194,7 +197,12 @@ public class AntColony implements SimulationEventListener {
                 Ant ant = null;
                 antSimGUI.setTime("Turns: " + turn + " : " + "Day: " + day);
                 Queen.consumeFood();
-                
+                Queen.ageAnt();
+                if(Queen.hasExpired()){
+                    timer.stop();
+                    JOptionPane.showMessageDialog(antSimGUI,"The Queen has starved!  Please begin a new simulation");
+                }
+                boolean expComplete = false;
                 double balaOutcome = Math.random();
                 
                     if(balaOutcome < .03){
@@ -202,45 +210,80 @@ public class AntColony implements SimulationEventListener {
                     }
                 /*age queen each day*/
                 if(turn % 10 == 0 || turn == 1){                    
-                    Queen.hatchMember();
-                    Queen.ageAnt();
+                    Queen.hatchMember();                    
                     day++;
                     
                 }
                 
                 for(int i = 0; i < bala.size(); i++){
                     Bala currentBala = (Bala) bala.get(i);
+                    currentBala.ageAnt();
+                    
                     AntFrequency af = currentBala.moveBala();
-                    if(af.getKilled()){ //moveBala returns AntFrequency object representing ant battled or def. ant object
-                        for(int j = 0; j < colonyMemberList.size(); j++){
-                            ant = (Ant) colonyMemberList.get(j);
-                            
-                            if(currentBala.getPosition() == ant.getPosition()){
-                                
-                                ant.setExpired(true);
-                                System.out.println("Colony member lost!");
-                                
-                                
+                        
+                        if(currentBala.hasExpired()){
+                                bala.remove(i);
+                                AntColony.Environment.gridContainer.getGridSquare(currentBala.getPosition()).getColNodeView().setBackground(java.awt.Color.green);
+                                System.out.println("Bala killed!");
+                                continue;
                             }
+                            switch(currentBala.getPosition()){
+                                case 364:
+                                    if(Math.random() < .5){
+                                        timer.stop();
+                                        JOptionPane.showMessageDialog(antSimGUI, "The Queen is dead!  Please begin a new simulation.");
+                                    }
+                                break;
+                                default:
+                                    break;                        
+
+                            }
+
+                        if(af.getKilled()){ //moveBala returns AntFrequency object representing ant battled or def. ant object
+                            for(int j = 0; j < colonyMemberList.size(); j++){
+                                ant = (Ant) colonyMemberList.get(j);
+
+                                if(currentBala.getPosition() == ant.getPosition() && !expComplete){
+
+                                    ant.setExpired(true);
+                                    System.out.println("Colony member lost! " + ant.getClass());
+                                    expComplete = true;
+
+                                }
+                            }
+                            expComplete = false;
                         }
-                    }
                 }
                 
                 for(int k = 0; k < colonyMemberList.size(); k++){
                     Ant currentAnt = (Ant)colonyMemberList.get(k);
+                       if(currentAnt instanceof Soldier){
+                            Soldier soldier = (Soldier) currentAnt;
+                            moveOutcome oc = soldier.moveSoldier();
+                            
+                            if(oc.getOutcome()){
+                                   
+                                if(AntColony.Environment.gridContainer.getGridSquare(oc.getPos()).getNumBala() > 0)
+                                    AntColony.Environment.gridContainer.getGridSquare(oc.getPos()).decrementBalaCnt();
+                                
+                                for(int i = 0; i < bala.size(); i++){
+                                    Bala currentBala = (Bala) bala.get(i);
+                                    if(currentBala.getPosition() == oc.getPos()){
+                                        currentBala.setExpired(true);
+                                    }
+                                }
+                            }
+                            
+                       } else {
+                            currentAnt.move();
+                       }
+                            currentAnt.ageAnt();
+                            
+                            if(currentAnt.hasExpired()){                                                                 
+                                colonyMemberList.remove(k);
+                                AntColony.Environment.gridContainer.getGridSquare(currentAnt.getPosition()).getColNodeView().setBackground(java.awt.Color.red);
+                            }
                        
-                        currentAnt.move();     
-                            if(currentAnt.hasExpired()){                                   
-                                colonyMemberList.remove(k);  
-                            if(colonyMemberList.get(k) instanceof Forager){
-                                AntColony.Environment.gridContainer.getGridSquare(ant.getPosition()).getColNodeView().hideForagerIcon();
-                            } else if(colonyMemberList.get(k) instanceof Scout){
-                                AntColony.Environment.gridContainer.getGridSquare(ant.getPosition()).getColNodeView().hideScoutIcon();
-                            } else {
-                                AntColony.Environment.gridContainer.getGridSquare(ant.getPosition()).getColNodeView().hideSoldierIcon();
-                            }
-                            }
-                        
                 }
                 
                 for(int i = 0; i < gridContainer.getGrid().size(); i++){
@@ -277,9 +320,7 @@ public class AntColony implements SimulationEventListener {
             public static void addMember(Ant newAnt){
                 colonyMemberList.addLast(newAnt);
             }    
-
-        
-            
+    
         }
         
     /* Queen class defined below */  
@@ -308,8 +349,7 @@ public class AntColony implements SimulationEventListener {
             } else { // type == 2
                 Environment.addMember(new Scout(hatchID));
             }
-                
-            
+                                      
         }
         
         public static void hatchBala(){
@@ -321,51 +361,36 @@ public class AntColony implements SimulationEventListener {
               AntColony.Environment.gridContainer.getGridSquare(364).decrementFood();
               AntColony.Environment.gridContainer.getGridSquare(364).getColNodeView().setFoodAmount(
                     AntColony.Environment.gridContainer.getGridSquare(364).getFood());
+              if(foodSupply == 0){
+                  setExpired(true);
+              }
         }
 
-        
         public static boolean hasExpired() {            
             return expired;
         }
         public static void setExpired(boolean status){
             expired = status;
+            remove();
             
         }
+             
         
-        public void move() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public static void remove() {
+            timer.stop();
+            antSimGUI.setTitle("The Queen is dead!  Please begin a new simulation.");
         }
-
-        
-        public void remove() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        
-        public boolean isSquareOpen() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-      
-        public void act() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        
-        public int position() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-        
-        public static boolean ageAnt() {
+               
+        public static void ageAnt() {
         if(lifeSpan - 1 != 0){
             lifeSpan -= 1;
-            return false;
+            
         }
         else{
             setExpired(true);
-            return true;
+            
         }
-    }
+        }
        
         public void setID(int ID){
             ID = ID;
@@ -380,202 +405,7 @@ public class AntColony implements SimulationEventListener {
     
     
     
-    /*private class Scout extends Ant{
-        private int ID;
-        public Scout(int id){
-            this.ID = id;
-        }
-        @Override
-        public boolean expire() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void move() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public boolean isSquareOpen() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void act() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public int position() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void ageAnt() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public int getID() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
     
-    private class Forager extends Ant{
-             //stores units of food ant possesses (wrapped integer 1)
-        private int food;
-        private int ID;
-
-        public Forager(int id){
-            this.ID = id;
-        }
-        @Override
-        public boolean expire() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void move() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public boolean isSquareOpen() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void act() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public int position() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-
-        public int getFood() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-
-        public void setFood() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void ageAnt() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public int getID() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
-    
-    private class Soldier extends Ant{
-        private int ID;
-        
-        public Soldier(int id){
-            this.ID = id;
-        }
-        @Override
-        public boolean expire() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void move() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public boolean isSquareOpen() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void act() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public int position() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void ageAnt() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public int getID() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }
-    
-    private class Bala extends Ant{
-        public Bala(){
-            
-        }
-        @Override
-    public boolean expire() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void move() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean isSquareOpen() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void act() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int position() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void ageAnt() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int getID() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    }*/
     
     
 }

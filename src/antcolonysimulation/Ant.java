@@ -22,16 +22,13 @@ abstract public class Ant {
     //status of ant's life
     private boolean expired;
     //stores units of food ant possesses (wrapped integer 1)
-    private int food;
+    private int food;    
+   
     
-    //called by ageAnt, calls remove when var lifespan equals 0
+//called by ageAnt, calls remove when var lifespan equals 0
     public abstract boolean hasExpired();
     //makes determined move to adjacent square
     public abstract void move();
-    //removes deceased ants from the colony and colony board
-    public abstract void remove();
-    //given ant type, determines whether given square is accessible 
-    public abstract boolean isSquareOpen();
     //defines and performs primary action(s) for ant type
     public abstract void act();
     //sets grid square of calling ant object

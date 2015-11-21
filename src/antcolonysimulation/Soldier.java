@@ -30,37 +30,49 @@ public class Soldier extends Ant{
     }
     @Override
     public boolean hasExpired() {
-        return false;
+        return this.expired;
     }
-
+    @Override
     public void setExpired(boolean status){
         this.expired = status;
     }
     
     @Override
-    public void move() {
+    public void move(){
+        
+    }
+    
+    public moveOutcome moveSoldier() {
         //scout mode
         
             
           if(!hasExpired()){
         
-            int[] possibleMoves = {getPosition() + 26, getPosition() + 27, getPosition() + 28, 
-                                     getPosition() - 26, getPosition() - 27, getPosition() - 28,
-                                        getPosition() + 1, getPosition() - 1};
+            int[] possibleMoves = {getPosition() - 26, getPosition() + 27, getPosition() - 28, 
+                                     getPosition() + 26, getPosition() - 27, getPosition() + 28,
+                                        getPosition() - 1, getPosition() + 1};
         
                 Random nextMove = new Random();
-                int next;
-                int move;
+                int next, move;
+                boolean looping = false;
+                
                 do {
-                    int bala = detectBala(possibleMoves);
-                    if(bala == 0){                
+                    
+                    int toBala = detectBala(possibleMoves, looping);
+                    if(toBala == 0){                
                         move = nextMove.nextInt(7);
                         next = possibleMoves[move];
+                        
                     } else {
-                        next = bala;
-                        mode = false;
+                        next = toBala;
+                        System.out.println("Bala in square: " + next);
+                        mode = false; // soldier is in attack mode
                     }
-
+                   
+                    
+                    if(toBala != 0)
+                        looping = AntColony.Environment.gridContainer.getGridSquare(next).isRevealed() == false? true:false;                    
+                    
                 } while(next > 728 || next < 0 || next == 364 || next % 27 == 0 || (
                         getPosition() % 27 == 0) && (next - 1) % 26 == 0 || 
                            AntColony.Environment.gridContainer.getGridSquare(next).isRevealed() == false);
@@ -68,10 +80,10 @@ public class Soldier extends Ant{
             
                 
             if(mode){      
-
+                if(getPosition() != 364)
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementSoldierCnt();
                     //Update colonyNodeViews to reflect current position of this scout ant
-
+                        System.out.println(next);
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setSoldierCount(
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier());         
 
@@ -97,40 +109,66 @@ public class Soldier extends Ant{
                     //reveal square for colony
 
             } else {//attack mode
-                act();
+                
+                AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementSoldierCnt();
+                    //Update colonyNodeViews to reflect current position of this scout ant
+                        System.out.println(next);
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setSoldierCount(
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier());         
+
+
+
+                    //if this ant was the only ant in the Square object being left, then hide its icon
+                    if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier() == 0)
+                        AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideSoldierIcon();
+
+                    setPosition(next);
+
+                    //Updates Square object in grid to reflect new position of this scout
+                    AntColony.Environment.gridContainer.getGridSquare(next).incrementSoldierCnt();
+
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setSoldierCount(
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier());
+
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().showNode();
+
+                    if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier() == 1)
+                        AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().showSoldierIcon();
+                    
                 mode = true;
+                return act(getPosition());                
+                
             }
 
                 } else {
                      if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier() == 1)
                             AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideSoldierIcon();
-                        else{
+                        
                         AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementSoldierCnt();
                         AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setSoldierCount(
                         AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier());
-                        }
+                        
                      
                      
 
                 }  
-        
-    }
-
-    @Override
-    public void remove() {
-        
-    }
-
-    @Override
-    public boolean isSquareOpen() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new moveOutcome(getPosition(), false);
     }
 
     @Override
     public void act() { //attack!
         
     }
-
+    
+    public moveOutcome act(int position){
+        double outcome = Math.random();
+        
+        if(outcome < .5)
+            return new moveOutcome(position, true);
+        else
+            return new moveOutcome(position, false);
+    }
+    
     @Override
     public int getPosition() {
         return this.position; 
@@ -166,28 +204,37 @@ public class Soldier extends Ant{
         this.position = pos;
     }
     
-    public int detectBala(int[] pMoves){
+    public int detectBala(int[] pMoves, boolean breakLoop){//breakLoop set to true when soldier becomes stuck in loop
         
         boolean detected = false;
         int i, location = 0;
         
         
             i = 0;      
-                
-        while(i < pMoves.length){            
-            
-          if(pMoves[location] > 728 || pMoves[location] < 0 || pMoves[location] % 27 == 0 || 
-                (getPosition() % 27 == 0) && (pMoves[location] - 1) % 26 == 0 ){
-            if(AntColony.Environment.gridContainer.getGridSquare(pMoves[i]).getNumBala() != 0){
-                detected = true;
-                location = i;
-            }
-          }
-              
-            i++;
-        } 
         
-        
+            while(i < pMoves.length){            
+
+              if(pMoves[location] > 728 || pMoves[location] < 0 || pMoves[location] % 27 == 0 || 
+                    (getPosition() % 27 == 0) && (pMoves[location] - 1) % 26 == 0 ){                    
+                        location = ++i;
+                        continue;
+
+
+              }
+                if(AntColony.Environment.gridContainer.getGridSquare(pMoves[location]).getNumBala() > 0){                                   
+                    if(breakLoop){ 
+                        location = ++i;
+                        continue;
+                    } else {
+                        detected = true;
+                        break;
+                    }
+                } else {
+                    location++;
+              }
+
+                i++;
+            }        
         
         return detected ? pMoves[location]:0;
     }
