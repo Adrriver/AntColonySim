@@ -59,7 +59,7 @@ public class Bala extends Ant{
         int next;
         int move;
         do {
-            move = nextMove.nextInt(7);
+            move = nextMove.nextInt(8);
             next = possibleMoves[move];
             
         } while(next > 728 || next < 0 || next % 27 == 0 || (

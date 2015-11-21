@@ -60,7 +60,7 @@ public class Soldier extends Ant{
                     
                     int toBala = detectBala(possibleMoves, looping);
                     if(toBala == 0){                
-                        move = nextMove.nextInt(7);
+                        move = nextMove.nextInt(8);
                         next = possibleMoves[move];
                         
                     } else {

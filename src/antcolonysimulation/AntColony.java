@@ -183,7 +183,7 @@ public class AntColony implements SimulationEventListener {
             }
                 //Loops continuously through time cycle construct
             public boolean startSimulation(){ 
-               
+                Queen.initQueen();
                 timer.start();   
                 
                 
@@ -198,9 +198,13 @@ public class AntColony implements SimulationEventListener {
                 antSimGUI.setTime("Turns: " + turn + " : " + "Day: " + day);
                 Queen.consumeFood();
                 Queen.ageAnt();
-                if(Queen.hasExpired()){
+                System.out.println("Lifespan: " + Queen.lifeSpan);
+                if(Queen.hasExpired() && Queen.lifeSpan == 0){
                     timer.stop();
-                    JOptionPane.showMessageDialog(antSimGUI,"The Queen has starved!  Please begin a new simulation");
+                    JOptionPane.showMessageDialog(antSimGUI,"The Queen has expired!  Please begin a new simulation (Normal Setup)");
+                } else if( Queen.hasExpired() && Queen.foodSupply == 0){
+                    timer.stop();
+                    JOptionPane.showMessageDialog(antSimGUI,"The Queen has starved!  Please begin a new simulation (Normal Setup)");
                 }
                 boolean expComplete = false;
                 double balaOutcome = Math.random();
@@ -281,6 +285,13 @@ public class AntColony implements SimulationEventListener {
                             
                             if(currentAnt.hasExpired()){                                                                 
                                 colonyMemberList.remove(k);
+                                if(currentAnt instanceof Forager)
+                                    AntColony.Environment.gridContainer.getGridSquare(currentAnt.getPosition()).decrementForagerCnt();
+                                else if(currentAnt instanceof Scout)
+                                    AntColony.Environment.gridContainer.getGridSquare(currentAnt.getPosition()).decrementScoutCnt();
+                                else if(currentAnt instanceof Soldier)
+                                    AntColony.Environment.gridContainer.getGridSquare(currentAnt.getPosition()).decrementSoldierCnt();
+                                
                                 AntColony.Environment.gridContainer.getGridSquare(currentAnt.getPosition()).getColNodeView().setBackground(java.awt.Color.red);
                             }
                        
@@ -332,10 +343,11 @@ public class AntColony implements SimulationEventListener {
         private static int hatchID;
         private static boolean expired;
         
-        private Queen(){
+        private static void initQueen(){
             ID = 0;
             lifeSpan = 73000;
             rand = new Random();
+            
         }
                 
         private static void hatchMember(){
@@ -378,12 +390,12 @@ public class AntColony implements SimulationEventListener {
         
         public static void remove() {
             timer.stop();
-            antSimGUI.setTitle("The Queen is dead!  Please begin a new simulation.");
+            JOptionPane.showMessageDialog(antSimGUI, "The Queen is dead!  Please begin a new simulation.");
         }
                
         public static void ageAnt() {
         if(lifeSpan - 1 != 0){
-            lifeSpan -= 1;
+            lifeSpan--;
             
         }
         else{

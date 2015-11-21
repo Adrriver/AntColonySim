@@ -206,6 +206,7 @@ public class Forager extends Ant{
             return false;
         }
         else{
+            
             setExpired(true);
             return true;
         }
@@ -231,12 +232,13 @@ public class Forager extends Ant{
         int[] possibleMoves = {getPosition() + 28, getPosition() - 27, getPosition() + 26, 
                                 getPosition() - 26, getPosition() + 27, getPosition() - 28,
                                     getPosition() + 1, getPosition() - 1};
-        while(bestMove == 0){  
+        while(bestMove == 0 ){  
            
         for(int i=0; i < 8; i++){
             
             
-            if(possibleMoves[i] != 364){
+            if(possibleMoves[i] != 364 || possibleMoves[i] > 728 || possibleMoves[i] < 0 || possibleMoves[i] == 364 || possibleMoves[i] % 27 == 0 || (
+                getPosition() % 27 == 0) && (possibleMoves[i] - 1) % 26 == 0){
                 
                 temp = AntColony.Environment.gridContainer.getGridSquare(possibleMoves[i]).getPheromone();
                    
@@ -250,14 +252,14 @@ public class Forager extends Ant{
         }
                if(maxPher == 0){
                     for(int mv : possibleMoves){
-                        int rand = random.nextInt(7);   
+                        int rand = random.nextInt(8);   
                         if(AntColony.Environment.gridContainer.getGridSquare(possibleMoves[rand]).isRevealed())
                             bestMove = possibleMoves[rand];
                                                     
                 }
             }
         }
-     
+        System.out.println("Forager lifeSpan: " + lifeSpan);
         return bestMove;
     }
 }
