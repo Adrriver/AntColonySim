@@ -86,7 +86,7 @@ public class AntColony implements SimulationEventListener {
         
         environment = new Environment(colonyView, cnvArray);
         
-        timer = new Timer(1000, environment);
+        timer = new Timer(10, environment);
         
         antSimGUI.addSimulationEventListener(this);
     }

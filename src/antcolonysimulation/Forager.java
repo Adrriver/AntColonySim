@@ -237,8 +237,8 @@ public class Forager extends Ant{
         for(int i=0; i < 8; i++){
             
             
-            if(possibleMoves[i] != 364 || possibleMoves[i] > 728 || possibleMoves[i] < 0 || possibleMoves[i] == 364 || possibleMoves[i] % 27 == 0 || (
-                getPosition() % 27 == 0) && (possibleMoves[i] - 1) % 26 == 0){
+            if(possibleMoves[i] != 364 && (possibleMoves[i] < 728 && possibleMoves[i] >= 0 && !(
+                getPosition() % 27 == 0 && (possibleMoves[i] - 1) % 26 == 0))){
                 
                 temp = AntColony.Environment.gridContainer.getGridSquare(possibleMoves[i]).getPheromone();
                    
@@ -252,9 +252,15 @@ public class Forager extends Ant{
         }
                if(maxPher == 0){
                     for(int mv : possibleMoves){
-                        int rand = random.nextInt(8);   
-                        if(AntColony.Environment.gridContainer.getGridSquare(possibleMoves[rand]).isRevealed())
-                            bestMove = possibleMoves[rand];
+                        int rand;
+                        int poss;
+                        do{
+                            rand = random.nextInt(8);   
+                            poss = possibleMoves[rand];
+                        } while(poss > 728 || poss < 0 || getPosition() % 27 == 0 && poss % 26 == 0);
+                        System.out.println("rand: " + rand);
+                        if(AntColony.Environment.gridContainer.getGridSquare(poss).isRevealed())
+                            bestMove = poss;
                                                     
                 }
             }

@@ -56,8 +56,8 @@ public class Scout extends Ant {
             move = nextMove.nextInt(8);
             next = possibleMoves[move];
             
-        } while(next > 728 || next < 0 || next == 364 || next % 27 == 0 || (
-                getPosition() % 27 == 0) && (next - 1) % 26 == 0);
+        } while(next > 728 || next < 0 || next == 364 || (getPosition() % 26 == 0) && (next % 27 == 0) ||
+                getPosition() % 27 == 0 && next % 26 == 0);
         
         
             
