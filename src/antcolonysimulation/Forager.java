@@ -27,7 +27,7 @@ public class Forager extends Ant{
     private int position;
     private boolean expired;
     private int lastMove;
-    private Random random;
+    
     
     public Forager(int ID){
         setID(ID);
@@ -35,7 +35,6 @@ public class Forager extends Ant{
         mode = true;
         moveLog = new ArrayStack();
         position = lastMove = 364;
-        random = new Random();
         moveLog.push(364);
     }
     
@@ -155,7 +154,7 @@ public class Forager extends Ant{
         }
         } else {
                  
-                if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumForager() == 1)
+                //if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumForager() == 1)
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideForagerIcon();
                 
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementForagerCnt();
@@ -208,6 +207,7 @@ public class Forager extends Ant{
         else{
             
             setExpired(true);
+            AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideForagerIcon();
             return true;
         }
     }
@@ -255,17 +255,17 @@ public class Forager extends Ant{
                         int rand;
                         int poss;
                         do{
-                            rand = random.nextInt(8);   
+                            rand = AntColony.randomNum.nextInt(8);   
                             poss = possibleMoves[rand];
                         } while(poss > 728 || poss < 0 || getPosition() % 27 == 0 && poss % 26 == 0);
-                        System.out.println("rand: " + rand);
+                        
                         if(AntColony.Environment.gridContainer.getGridSquare(poss).isRevealed())
                             bestMove = poss;
                                                     
                 }
             }
         }
-        System.out.println("Forager lifeSpan: " + lifeSpan);
+       
         return bestMove;
     }
 }

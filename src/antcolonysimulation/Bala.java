@@ -8,6 +8,7 @@ package antcolonysimulation;
 
 import dataStructures.Iterator;
 import java.util.Random;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -51,23 +52,30 @@ public class Bala extends Ant{
     public AntFrequency moveBala() {
         if(!hasExpired()){
         
+       if(getPosition() == 0){
+            AntColony.Environment.gridContainer.getGridSquare(0).getColNodeView().showNode();
+            AntColony.Environment.gridContainer.getGridSquare(0).incrementBalaCnt();
+            AntColony.Environment.gridContainer.getGridSquare(0).getColNodeView().setBalaCount(
+               AntColony.Environment.gridContainer.getGridSquare(0).getNumBala());
+       }     
+            
         int[] possibleMoves = {getPosition() - 26, getPosition() + 27, getPosition() - 1, 
                                 getPosition() + 26, getPosition() - 27, getPosition() + 28,
                                     getPosition() + 1, getPosition() - 28};
         
-        Random nextMove = new Random();
+        
         int next;
         int move;
         do {
-            move = nextMove.nextInt(8);
+            move = AntColony.randomNum.nextInt(8);
             next = possibleMoves[move];
             
         } while(next > 728 || next < 0 || next % 27 == 0 || (
-                getPosition() % 27 == 0) && (next - 1) % 26 == 0);
+                getPosition() % 27 == 0) && (next) % 26 == 0);
         
         
             
-        
+                
         
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementBalaCnt();   
             //Update colonyNodeViews to reflect current position of this scout ant
@@ -108,11 +116,11 @@ public class Bala extends Ant{
         } else {
              if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumBala() < 2)
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideBalaIcon();
-                else{
-                AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementBalaCnt();
-                AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setBalaCount(
-                AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumBala());
-                }
+                
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementBalaCnt();
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setBalaCount(
+                    AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumBala());
+                
                
         } 
         if(antFrequency == null){

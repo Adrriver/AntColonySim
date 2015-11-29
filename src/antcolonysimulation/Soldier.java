@@ -6,7 +6,7 @@
 package antcolonysimulation;
 
 import java.util.HashMap;
-import java.util.Random;
+
 
 /**
  *
@@ -52,7 +52,7 @@ public class Soldier extends Ant{
                                      getPosition() + 26, getPosition() - 27, getPosition() + 28,
                                         getPosition() - 1, getPosition() + 1};
         
-                Random nextMove = new Random();
+                
                 int next, move;
                 boolean looping = false;
                 
@@ -60,12 +60,12 @@ public class Soldier extends Ant{
                     
                     int toBala = detectBala(possibleMoves, looping);
                     if(toBala == 0){                
-                        move = nextMove.nextInt(8);
+                        move = AntColony.randomNum.nextInt(8);
                         next = possibleMoves[move];
                         
                     } else {
                         next = toBala;
-                        System.out.println("Bala in square: " + next);
+                       
                         mode = false; // soldier is in attack mode
                     }
                    
@@ -141,13 +141,13 @@ public class Soldier extends Ant{
             }
 
                 } else {
-                     if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier() == 1)
+                     //if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier() == 1)
                             AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideSoldierIcon();
                         
                         AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementSoldierCnt();
                         AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setSoldierCount(
                         AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier());
-                        
+                        System.out.println("else reached");
                      
                      
 
@@ -182,6 +182,7 @@ public class Soldier extends Ant{
         }
         else{
             setExpired(true);
+            AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideSoldierIcon();
             return true;
         }
     }

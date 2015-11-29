@@ -23,11 +23,11 @@ public class AntColony implements SimulationEventListener {
     private static ArrayList cnvArray; //Stores ColonyNodeView instances which comprise visual aspect of the environment grid
     private static int turn, day; //Simulation day
     private static javax.swing.Timer timer;
-    
+    protected static Random randomNum;
     public AntColony(){
         
         colonyView = new ColonyView(27, 27);
-    
+        randomNum = new Random(1323000434);
         reset();        
     }
         
@@ -86,7 +86,7 @@ public class AntColony implements SimulationEventListener {
         
         environment = new Environment(colonyView, cnvArray);
         
-        timer = new Timer(10, environment);
+        timer = new Timer(1, environment);
         
         antSimGUI.addSimulationEventListener(this);
     }
@@ -198,7 +198,7 @@ public class AntColony implements SimulationEventListener {
                 antSimGUI.setTime("Turns: " + turn + " : " + "Day: " + day);
                 Queen.consumeFood();
                 Queen.ageAnt();
-                System.out.println("Lifespan: " + Queen.lifeSpan);
+                
                 if(Queen.hasExpired() && Queen.lifeSpan == 0){
                     timer.stop();
                     JOptionPane.showMessageDialog(antSimGUI,"The Queen has expired!  Please begin a new simulation (Normal Setup)");
@@ -209,7 +209,7 @@ public class AntColony implements SimulationEventListener {
                 boolean expComplete = false;
                 double balaOutcome = Math.random();
                 
-                    if(balaOutcome < .03){
+                    if(balaOutcome <= .03){
                         Queen.hatchBala();
                     }
                 /*age queen each day*/
@@ -228,7 +228,7 @@ public class AntColony implements SimulationEventListener {
                         if(currentBala.hasExpired()){
                                 bala.remove(i);
                                 AntColony.Environment.gridContainer.getGridSquare(currentBala.getPosition()).getColNodeView().setBackground(java.awt.Color.green);
-                                System.out.println("Bala killed!");
+                               
                                 continue;
                             }
                             switch(currentBala.getPosition()){
@@ -250,7 +250,7 @@ public class AntColony implements SimulationEventListener {
                                 if(currentBala.getPosition() == ant.getPosition() && !expComplete){
 
                                     ant.setExpired(true);
-                                    System.out.println("Colony member lost! " + ant.getClass());
+                                    
                                     expComplete = true;
 
                                 }
@@ -267,8 +267,8 @@ public class AntColony implements SimulationEventListener {
                             
                             if(oc.getOutcome()){
                                    
-                                if(AntColony.Environment.gridContainer.getGridSquare(oc.getPos()).getNumBala() > 0)
-                                    AntColony.Environment.gridContainer.getGridSquare(oc.getPos()).decrementBalaCnt();
+//                                if(AntColony.Environment.gridContainer.getGridSquare(oc.getPos()).getNumBala() > 0)
+//                                    AntColony.Environment.gridContainer.getGridSquare(oc.getPos()).decrementBalaCnt();
                                 
                                 for(int i = 0; i < bala.size(); i++){
                                     Bala currentBala = (Bala) bala.get(i);
@@ -281,20 +281,15 @@ public class AntColony implements SimulationEventListener {
                        } else {
                             currentAnt.move();
                        }
-                            currentAnt.ageAnt();
+                            
                             
                             if(currentAnt.hasExpired()){                                                                 
                                 colonyMemberList.remove(k);
-                                if(currentAnt instanceof Forager)
-                                    AntColony.Environment.gridContainer.getGridSquare(currentAnt.getPosition()).decrementForagerCnt();
-                                else if(currentAnt instanceof Scout)
-                                    AntColony.Environment.gridContainer.getGridSquare(currentAnt.getPosition()).decrementScoutCnt();
-                                else if(currentAnt instanceof Soldier)
-                                    AntColony.Environment.gridContainer.getGridSquare(currentAnt.getPosition()).decrementSoldierCnt();
-                                
+//                              
+//                                
                                 AntColony.Environment.gridContainer.getGridSquare(currentAnt.getPosition()).getColNodeView().setBackground(java.awt.Color.red);
-                            }
-                       
+                              }
+                       currentAnt.ageAnt();
                 }
                 
                 for(int i = 0; i < gridContainer.getGrid().size(); i++){

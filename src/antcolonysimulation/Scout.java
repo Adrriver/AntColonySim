@@ -6,7 +6,7 @@
 package antcolonysimulation;
 
 import java.util.HashMap;
-import java.util.Random;
+
 
 /**
  *
@@ -49,11 +49,11 @@ public class Scout extends Ant {
                                 getPosition() + 26, getPosition() - 27, getPosition() + 28,
                                     getPosition() + 1 , getPosition() - 1};
         
-        Random nextMove = new Random();
+         
         int next;
         int move;
         do {
-            move = nextMove.nextInt(8);
+            move = AntColony.randomNum.nextInt(8);
             next = possibleMoves[move];
             
         } while(next > 728 || next < 0 || next == 364 || (getPosition() % 26 == 0) && (next % 27 == 0) ||
@@ -92,7 +92,7 @@ public class Scout extends Ant {
             AntColony.Environment.gridContainer.getGridSquare(getPosition()).setRevealed(true);
             
         } else {
-             if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout() == 1)
+             //if(AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumScout() == 1)
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideScoutIcon();
                 
                 AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementScoutCnt();
@@ -127,6 +127,8 @@ public class Scout extends Ant {
         }
         else{
             setExpired(true);
+            
+            //AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().hideScoutIcon();
             return true;
         }
     }
