@@ -83,7 +83,7 @@ public class Soldier extends Ant{
                 if(getPosition() != 364)
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementSoldierCnt();
                     //Update colonyNodeViews to reflect current position of this scout ant
-                        System.out.println(next);
+                       
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setSoldierCount(
                     AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier());         
 
@@ -147,7 +147,8 @@ public class Soldier extends Ant{
                         AntColony.Environment.gridContainer.getGridSquare(getPosition()).decrementSoldierCnt();
                         AntColony.Environment.gridContainer.getGridSquare(getPosition()).getColNodeView().setSoldierCount(
                         AntColony.Environment.gridContainer.getGridSquare(getPosition()).getNumSoldier());
-                        System.out.println("else reached");
+                       
+                       
                      
                      
 

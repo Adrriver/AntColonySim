@@ -86,7 +86,7 @@ public class AntColony implements SimulationEventListener {
         
         environment = new Environment(colonyView, cnvArray);
         
-        timer = new Timer(1, environment);
+        timer = new Timer(0, environment);
         
         antSimGUI.addSimulationEventListener(this);
     }
@@ -198,13 +198,13 @@ public class AntColony implements SimulationEventListener {
                 antSimGUI.setTime("Turns: " + turn + " : " + "Day: " + day);
                 Queen.consumeFood();
                 Queen.ageAnt();
-                
+                System.out.println(Queen.lifeSpan);
                 if(Queen.hasExpired() && Queen.lifeSpan == 0){
-                    timer.stop();
                     JOptionPane.showMessageDialog(antSimGUI,"The Queen has expired!  Please begin a new simulation (Normal Setup)");
+                    Queen.setExpired(true);                    
                 } else if( Queen.hasExpired() && Queen.foodSupply == 0){
-                    timer.stop();
                     JOptionPane.showMessageDialog(antSimGUI,"The Queen has starved!  Please begin a new simulation (Normal Setup)");
+                    Queen.setExpired(true);                                       
                 }
                 boolean expComplete = false;
                 double balaOutcome = Math.random();
@@ -234,7 +234,8 @@ public class AntColony implements SimulationEventListener {
                             switch(currentBala.getPosition()){
                                 case 364:
                                     if(Math.random() < .5){
-                                        timer.stop();
+                                        Queen.setExpired(true);
+                                        //timer.stop();
                                         JOptionPane.showMessageDialog(antSimGUI, "The Queen is dead!  Please begin a new simulation.");
                                     }
                                 break;
@@ -385,11 +386,11 @@ public class AntColony implements SimulationEventListener {
         
         public static void remove() {
             timer.stop();
-            JOptionPane.showMessageDialog(antSimGUI, "The Queen is dead!  Please begin a new simulation.");
+            
         }
                
         public static void ageAnt() {
-        if(lifeSpan - 1 != 0){
+        if(lifeSpan != 0){
             lifeSpan--;
             
         }
